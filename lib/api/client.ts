@@ -1,96 +1,68 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+import { ApiError } from "@/lib/api/errors"
+import type { ApiResponse } from "@/lib/api/types"
 
-class ApiError extends Error {
-  constructor(
-    public status: number,
-    public body: unknown,
-  ) {
-    super(`API error ${status}`);
-    this.name = "ApiError";
-  }
+// Browser-side client. Calls go to the Next.js BFF (/api/proxy), which attaches the httpOnly
+// tokens and the active store; this code never sees a token.
+const PROXY_BASE = "/api/proxy"
+
+// Custom header forces a CORS preflight, so other sites can't forge state-changing requests.
+const CSRF_HEADER = { "X-Requested-With": "fetch" }
+
+function redirectToLogin() {
+  if (typeof window === "undefined") return
+  const next = window.location.pathname + window.location.search
+  // Full navigation on purpose: it passes through proxy.ts (token refresh) and drops in-memory state.
+  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+  window.location.assign(`/login?next=${encodeURIComponent(next)}`)
 }
 
-let accessToken: string | null = null;
-
-export function setAccessToken(token: string | null) {
-  accessToken = token;
-}
-
-export function getAccessToken() {
-  return accessToken;
-}
-
-async function request<T>(
-  path: string,
-  options?: RequestInit,
-): Promise<T> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...((options?.headers as Record<string, string>) ?? {}),
-  };
-
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
+async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  // FormData goes as multipart: the browser sets Content-Type with the boundary itself.
+  const isForm = body instanceof FormData
+  let res: Response
+  try {
+    res = await fetch(`${PROXY_BASE}${path}`, {
+      method,
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        ...CSRF_HEADER,
+        ...(body !== undefined && !isForm ? { "Content-Type": "application/json" } : {}),
+      },
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
+    })
+  } catch {
+    throw new ApiError(0, "NETWORK_ERROR")
   }
 
-  const storeId = getActiveStoreId();
-  if (storeId) {
-    headers["X-Store-Id"] = storeId;
+  if (res.status === 401) {
+    redirectToLogin()
+    throw new ApiError(401, "UNAUTHORIZED")
   }
+  if (res.status === 204) return undefined as T
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
-
-  if (res.status === 401 && accessToken) {
-    // TODO: attempt token refresh
-    accessToken = null;
-    window.location.href = "/login";
-    throw new ApiError(401, null);
+  const payload = (await res.json().catch(() => null)) as ApiResponse<T> | null
+  if (!res.ok || !payload?.success) {
+    throw new ApiError(res.status, payload?.code ?? "UNKNOWN_ERROR", payload?.error, payload?.fieldErrors)
   }
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => null);
-    throw new ApiError(res.status, body);
-  }
-
-  if (res.status === 204) return undefined as T;
-  return res.json();
+  return payload.data as T
 }
 
 export const api = {
-  get: <T>(path: string) => request<T>(path),
-
-  post: <T>(path: string, body?: unknown) =>
-    request<T>(path, {
-      method: "POST",
-      body: body ? JSON.stringify(body) : undefined,
-    }),
-
-  put: <T>(path: string, body?: unknown) =>
-    request<T>(path, {
-      method: "PUT",
-      body: body ? JSON.stringify(body) : undefined,
-    }),
-
-  patch: <T>(path: string, body?: unknown) =>
-    request<T>(path, {
-      method: "PATCH",
-      body: body ? JSON.stringify(body) : undefined,
-    }),
-
-  delete: <T>(path: string) =>
-    request<T>(path, { method: "DELETE" }),
-};
-
-export { ApiError };
-
-function getActiveStoreId(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("activeStoreId");
+  get: <T>(path: string) => request<T>("GET", path),
+  post: <T>(path: string, body?: unknown) => request<T>("POST", path, body),
+  put: <T>(path: string, body?: unknown) => request<T>("PUT", path, body),
+  patch: <T>(path: string, body?: unknown) => request<T>("PATCH", path, body),
+  delete: <T = void>(path: string) => request<T>("DELETE", path),
+  /** Multipart upload of a single file in the "file" field. */
+  upload: <T>(path: string, file: File) => {
+    const form = new FormData()
+    form.append("file", file)
+    return request<T>("POST", path, form)
+  },
 }
 
-export function setActiveStoreId(storeId: string) {
-  localStorage.setItem("activeStoreId", storeId);
+/** URL of a backend binary (e.g. an image) through the same-origin BFF, so the session cookie applies. */
+export function proxyUrl(path: string): string {
+  return `${PROXY_BASE}${path}`
 }

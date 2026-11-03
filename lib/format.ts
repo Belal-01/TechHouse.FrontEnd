@@ -1,0 +1,39 @@
+// Single place for locale-aware formatting. Never format numbers, money, dates or names by hand.
+// Arabic text with Latin digits ("nu-latn"), so figures match what users type into inputs.
+const LOCALE = "ar-u-nu-latn"
+
+const regionNames = new Intl.DisplayNames([LOCALE], { type: "region" })
+const dateFormatter = new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium" })
+
+/** "SY" → "سوريا", "LY" → "ليبيا". Falls back to the code if unknown. */
+export function regionName(countryCode: string): string {
+  try {
+    return regionNames.of(countryCode.toUpperCase()) ?? countryCode
+  } catch {
+    return countryCode
+  }
+}
+
+// "$800" rather than the Arabic locale's "800 US$"; render inside dir="ltr" so it stays in this order.
+const moneyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+})
+
+/** USD amount → "$1,234.5". Wrap the result in an element with dir="ltr". */
+export function formatMoney(value: number): string {
+  return moneyFormatter.format(value)
+}
+
+/** "$780" or "$780 – $900" for a price range. */
+export function formatMoneyRange(min: number | null | undefined, max: number | null | undefined): string {
+  if (min == null || max == null) return "—"
+  return min === max ? formatMoney(min) : `${formatMoney(min)} – ${formatMoney(max)}`
+}
+
+/** ISO timestamp or Date → numeric date, e.g. "2026/11/03" (avoids month names that differ between Syria and Libya). */
+export function formatDate(value: string | Date): string {
+  return dateFormatter.format(typeof value === "string" ? new Date(value) : value)
+}

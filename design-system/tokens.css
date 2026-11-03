@@ -1,5 +1,5 @@
 /* Tech House — generated from tokens.json. Edit tokens.json, not this file. */
-@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap");
+/* Synced by scripts/sync-tokens.mjs (pnpm tokens:sync). Fonts are self-hosted via next/font. */
 
 :root, [data-theme="light"] {
   --brand-red: #a70806;

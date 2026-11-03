@@ -8,9 +8,6 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile --fetch-timeout=600000
 
 FROM base AS builder
-# NEXT_PUBLIC_* vars are inlined into the client bundle at build time
-ARG NEXT_PUBLIC_API_URL=http://localhost:8080
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -22,6 +19,8 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+# Runtime config, read on the server per request (the browser never talks to the backend directly).
+ENV BACKEND_URL=http://backend:8080
 
 RUN addgroup -S nodejs -g 1001 && adduser -S nextjs -u 1001 -G nodejs
 

@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Archivo, Noto_Kufi_Arabic } from "next/font/google";
 import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { QueryProvider } from "@/lib/providers/query-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -19,7 +22,7 @@ const notoKufiArabic = Noto_Kufi_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: "البيت التقني",
+  title: { default: "البيت التقني", template: "%s | البيت التقني" },
   description: "لوحة إدارة المخزون والمبيعات",
 };
 
@@ -33,7 +36,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <NuqsAdapter>
+              <TooltipProvider>{children}</TooltipProvider>
+            </NuqsAdapter>
+            <Toaster />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

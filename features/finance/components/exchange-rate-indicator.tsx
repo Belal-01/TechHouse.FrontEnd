@@ -24,7 +24,7 @@ export function ExchangeRateIndicator() {
   const label = rate.isError
     ? "تعذّر تحميل سعر الصرف"
     : current
-      ? `سعر الدولار: ${formatSyp(current.midRate)} ليرة سورية${data.stale ? "، ليس سعر اليوم" : ""}${data.pendingReview ? "، يوجد سعر جديد بانتظار المراجعة" : ""}`
+      ? `سعر الدولار بالليرة السورية: شراء ${formatSyp(current.buyRate)}، مبيع ${formatSyp(current.sellRate)}${data.stale ? "، ليس سعر اليوم" : ""}${data.pendingReview ? "، يوجد سعر جديد بانتظار المراجعة" : ""}`
       : "لا يوجد سعر صرف. أدخله الآن"
 
   return (
@@ -39,10 +39,17 @@ export function ExchangeRateIndicator() {
     >
       {needsAttention ? <CircleAlert className="size-4 shrink-0" aria-hidden /> : <DollarSign className="size-4 shrink-0 text-blue" aria-hidden />}
       {current ? (
-        <>
-          <span className="hidden text-muted-foreground sm:inline">الدولار</span>
-          <SypAmount value={current.midRate} />
-        </>
+        // Phones: "14,450 / 14,525"; wider screens add the labels and the unit.
+        <span className="flex items-baseline gap-1.5 whitespace-nowrap">
+          <span className="hidden font-normal text-muted-foreground sm:inline">شراء</span>
+          <SypAmount value={current.buyRate} hideUnit />
+          <span className="text-muted-foreground sm:hidden" aria-hidden>
+            /
+          </span>
+          <span className="hidden font-normal text-muted-foreground sm:inline">· مبيع</span>
+          <SypAmount value={current.sellRate} hideUnit />
+          <span className="hidden font-normal text-muted-foreground md:inline">ل.س</span>
+        </span>
       ) : (
         <span>{rate.isError ? "سعر الصرف" : "لا يوجد سعر"}</span>
       )}

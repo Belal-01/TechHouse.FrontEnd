@@ -24,12 +24,11 @@ const HISTORY_DAYS = 30
 
 const columns: DataTableColumn<ExchangeRate>[] = [
   { id: "date", header: "التاريخ", cell: (rate) => formatDate(rate.rateDate) },
-  { id: "buy", header: "شراء", className: "hidden sm:table-cell", cell: (rate) => <SypAmount value={rate.buyRate} hideUnit /> },
-  { id: "sell", header: "مبيع", className: "hidden sm:table-cell", cell: (rate) => <SypAmount value={rate.sellRate} hideUnit /> },
+  { id: "buy", header: "شراء", cell: (rate) => <SypAmount value={rate.buyRate} hideUnit /> },
   {
-    id: "mid",
-    header: "الوسطي",
-    cell: (rate) => <SypAmount value={rate.midRate} hideUnit className="font-semibold text-foreground" />,
+    id: "sell",
+    header: "مبيع",
+    cell: (rate) => <SypAmount value={rate.sellRate} hideUnit className="font-semibold text-foreground" />,
   },
   { id: "source", header: "المصدر", className: "hidden md:table-cell", cell: (rate) => <RateSourceBadge source={rate.source} /> },
   { id: "status", header: "الحالة", align: "end", cell: (rate) => <RateStatusBadge status={rate.status} /> },
@@ -61,7 +60,7 @@ export function ExchangeRatesView() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="أسعار الصرف"
-        description="سعر الدولار بالليرة السورية في دمشق. يُحدَّث تلقائياً مرتين يومياً: 10 صباحاً و4 عصراً."
+        description="سعر الدولار بالليرة السورية في دمشق، ويُستخدم سعر المبيع في البيع. يُحدَّث تلقائياً مرتين يومياً: 10 صباحاً و4 عصراً."
         actions={
           <>
             <Button variant="outline" onClick={openManual}>

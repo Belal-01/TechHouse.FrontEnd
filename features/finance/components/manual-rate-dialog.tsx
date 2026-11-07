@@ -55,7 +55,7 @@ export function ManualRateDialog({ open, onOpenChange, initial }: ManualRateDial
       open={open}
       onOpenChange={onOpenChange}
       title="إدخال سعر اليوم يدوياً"
-      description="بالليرة السورية لكل دولار واحد. يُستخدم السعر الوسطي، ولا يستبدله التحديث التلقائي اليوم."
+      description="بالليرة السورية لكل دولار واحد. يُستخدم سعر المبيع في البيع، ولا يستبدل التحديث التلقائي هذا السعر اليوم."
       submitLabel="حفظ السعر"
       cancelLabel="إلغاء"
       onSubmit={onSubmit}

@@ -21,7 +21,8 @@ type PendingRateCardProps = {
 export function PendingRateCard({ pending, current, onEnterManually }: PendingRateCardProps) {
   const approve = useApproveRate()
   const [error, setError] = useState<string | null>(null)
-  const change = current ? ((pending.midRate - current.midRate) / current.midRate) * 100 : null
+  // Sales use the sell rate, so that is the change that matters.
+  const change = current ? ((pending.sellRate - current.sellRate) / current.sellRate) * 100 : null
 
   const onApprove = async () => {
     setError(null)
@@ -45,14 +46,25 @@ export function PendingRateCard({ pending, current, onEnterManually }: PendingRa
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <SypAmount value={pending.midRate} className="h2 text-foreground" />
+        <dl className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <div className="flex items-baseline gap-2">
+            <dt className="small text-muted-foreground">شراء</dt>
+            <dd>
+              <SypAmount value={pending.buyRate} className="h3 text-foreground" />
+            </dd>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <dt className="small text-muted-foreground">مبيع</dt>
+            <dd>
+              <SypAmount value={pending.sellRate} className="h3 text-foreground" />
+            </dd>
+          </div>
           {change !== null ? (
-            <span className="small text-muted-foreground">
-              تغيّر <span dir="ltr">{`${change > 0 ? "+" : ""}${change.toFixed(1)}%`}</span> عن السعر الحالي
-            </span>
+            <p className="small text-muted-foreground">
+              تغيّر سعر المبيع <span dir="ltr">{`${change > 0 ? "+" : ""}${change.toFixed(1)}%`}</span>
+            </p>
           ) : null}
-        </p>
+        </dl>
         {error ? <Alert>{error}</Alert> : null}
         <div className="flex flex-wrap gap-2">
           <Button onClick={onApprove} disabled={approve.isPending}>

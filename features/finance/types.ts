@@ -10,8 +10,9 @@ export type ExchangeRate = {
   rateDate: string
   currencyPair: string
   buyRate: number
+  /** Used to convert sales. */
   sellRate: number
-  /** (buy + sell) / 2: the rate the app uses. */
+  /** (buy + sell) / 2, for reference. */
   midRate: number
   source: RateSource
   status: RateStatus

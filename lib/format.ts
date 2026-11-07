@@ -27,12 +27,6 @@ export function formatMoney(value: number): string {
   return moneyFormatter.format(value)
 }
 
-/** "$780" or "$780 – $900" for a price range. */
-export function formatMoneyRange(min: number | null | undefined, max: number | null | undefined): string {
-  if (min == null || max == null) return "—"
-  return min === max ? formatMoney(min) : `${formatMoney(min)} – ${formatMoney(max)}`
-}
-
 /** ISO timestamp or Date → numeric date, e.g. "2026/11/03" (avoids month names that differ between Syria and Libya). */
 export function formatDate(value: string | Date): string {
   return dateFormatter.format(typeof value === "string" ? new Date(value) : value)

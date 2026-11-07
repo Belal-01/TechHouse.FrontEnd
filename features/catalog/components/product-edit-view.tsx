@@ -46,7 +46,6 @@ export function ProductEditView({ productId }: { productId: string }) {
     <ProductForm
       key={data.id}
       product={data}
-      images={data.images}
       mediaSlot={<ProductImagesManager productId={data.id} images={data.images} />}
     />
   )

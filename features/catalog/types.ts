@@ -24,26 +24,17 @@ export type ProductImage = {
   sizeBytes: number
 }
 
-export type ProductVariant = {
-  id: string
-  optionValues: string[]
-  sku?: string | null
-  barcode?: string | null
-  sellingPrice: number
-  imageId?: string | null
-  active: boolean
-}
-
 export type ProductDetail = {
   id: string
   name: string
   description?: string | null
   category?: CategorySummary | null
+  sku?: string | null
+  barcode?: string | null
+  sellingPrice: number
   warrantyMonths?: number | null
   specifications: Record<string, unknown>
-  optionNames: string[]
   active: boolean
-  variants: ProductVariant[]
   images: ProductImage[]
   version: number
   createdAt: string
@@ -55,33 +46,22 @@ export type ProductSummary = {
   name: string
   category?: CategorySummary | null
   active: boolean
-  variantCount: number
-  minPrice?: number | null
-  maxPrice?: number | null
+  sellingPrice: number
   primaryImageId?: string | null
   sku?: string | null
   updatedAt: string
-}
-
-export type VariantInput = {
-  id?: string
-  optionValues: string[]
-  sku: string | null
-  barcode: string | null
-  sellingPrice: number
-  imageId: string | null
-  active: boolean
 }
 
 export type ProductInput = {
   name: string
   description: string | null
   categoryId: string | null
+  sku: string | null
+  barcode: string | null
+  sellingPrice: number
   warrantyMonths: number | null
   specifications: Record<string, string>
   active: boolean
-  optionNames: string[]
-  variants: VariantInput[]
   version?: number
 }
 

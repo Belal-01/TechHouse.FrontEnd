@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { toUserMessage } from "@/lib/api/errors"
-import { formatMoneyRange } from "@/lib/format"
+import { formatMoney } from "@/lib/format"
 import { useCategories } from "../api/categories"
 import { useProducts } from "../api/products"
 import type { ProductSummary } from "../types"
@@ -79,7 +79,7 @@ export function ProductsView() {
               {product.name}
             </Link>
             <span className="truncate text-xs text-muted-foreground">
-              {product.variantCount > 1 ? `${product.variantCount} أنواع` : product.sku ? <span dir="ltr">{product.sku}</span> : "بدون رمز"}
+              {product.sku ? <span dir="ltr">{product.sku}</span> : "بدون رمز"}
             </span>
           </div>
         </div>
@@ -94,7 +94,7 @@ export function ProductsView() {
     {
       id: "price",
       header: "السعر",
-      cell: (product) => <span dir="ltr">{formatMoneyRange(product.minPrice, product.maxPrice)}</span>,
+      cell: (product) => <span dir="ltr">{formatMoney(product.sellingPrice)}</span>,
     },
     {
       id: "status",

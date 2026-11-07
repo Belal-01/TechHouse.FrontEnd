@@ -5,13 +5,13 @@ type ApplyOptions<T extends FieldValues> = {
   /** Business codes that belong to one field, e.g. { CATEGORY_NAME_EXISTS: "name" }. */
   codeToField?: Partial<Record<string, Path<T>>>
   /**
-   * Maps a server field path (already in dot form, e.g. "variants.2.sku") to the form's field path.
+   * Maps a server field path (already in dot form, e.g. "specifications.2.key") to the form's field path.
    * Return null for fields the form doesn't show; the error is then left for a form-level message.
    */
   mapField?: (serverField: string) => string | null
 }
 
-/** "variants[2].sku" → "variants.2.sku" (react-hook-form path syntax). */
+/** "specifications[2].key" → "specifications.2.key" (react-hook-form path syntax). */
 export function toFormPath(serverField: string): string {
   return serverField.replace(/\[(\d+)]/g, ".$1")
 }

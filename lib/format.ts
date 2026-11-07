@@ -50,3 +50,17 @@ const integerFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits:
 export function formatQuantity(value: number): string {
   return integerFormatter.format(value)
 }
+
+const sypFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 })
+
+/** Syrian pounds without the unit: "14,487.5". Render in dir="ltr" and put "ل.س" beside it. */
+export function formatSyp(value: number): string {
+  return sypFormatter.format(value)
+}
+
+const dateTimeFormatter = new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium", timeStyle: "short" })
+
+/** ISO timestamp → date and time, e.g. "2026/11/08، 10:00 ص". */
+export function formatDateTime(value: string | Date): string {
+  return dateTimeFormatter.format(typeof value === "string" ? new Date(value) : value)
+}

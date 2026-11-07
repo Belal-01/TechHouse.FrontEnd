@@ -5,6 +5,7 @@ import { AppShellSkeleton } from "@/components/layout/app-shell-skeleton"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SIDEBAR_COOKIE_NAME } from "@/components/ui/sidebar.constants"
 import { ActiveStore, ActiveStoreSkeleton, UserMenu, UserMenuSkeleton } from "@/features/auth/server"
+import { ExchangeRateIndicator } from "@/features/finance"
 import { DashboardSidebar } from "./_components/dashboard-sidebar"
 
 export default function DashboardLayout({ children }: LayoutProps<"/">) {
@@ -31,6 +32,7 @@ async function DashboardShell({ children }: { children: ReactNode }) {
       />
       <SidebarInset>
         <AppHeader
+          status={<ExchangeRateIndicator />}
           actions={
             <Suspense fallback={<UserMenuSkeleton />}>
               <UserMenu />

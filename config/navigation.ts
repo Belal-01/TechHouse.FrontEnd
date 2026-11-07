@@ -46,7 +46,7 @@ export const dashboardNavigation: NavGroup[] = [
         items: [
           { title: "المحافظ", href: "/finance/wallets", disabled: true },
           { title: "المصاريف", href: "/finance/expenses", disabled: true },
-          { title: "أسعار الصرف", href: "/finance/exchange-rates", disabled: true },
+          { title: "أسعار الصرف", href: "/finance/exchange-rates" },
           { title: "التقارير", href: "/finance/reports", disabled: true },
         ],
       },

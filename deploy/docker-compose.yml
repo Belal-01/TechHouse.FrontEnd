@@ -1,0 +1,18 @@
+# Deployed as a Portainer stack (Repository mode, compose path: deploy/docker-compose.yml).
+# Stack environment variables (set in Portainer):
+#   BACKEND_URL   e.g. https://api.techhouse-sy.com   (required)
+#   FRONTEND_PORT host port for NPM to forward to      (optional, default 3010)
+services:
+  app:
+    image: ghcr.io/belal-01/techhouse-frontend:latest
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      # Server-side only: the Next.js server calls the backend, never the browser.
+      BACKEND_URL: ${BACKEND_URL:?set BACKEND_URL}
+      COOKIE_SECURE: "true"
+    ports:
+      - "${FRONTEND_PORT:-3010}:3000"

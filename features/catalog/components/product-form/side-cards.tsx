@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { useCategories } from "../../api/categories"
 import type { ProductFormValues } from "../../schemas/product.schema"
-import { fieldA11y } from "./field-a11y"
+import { fieldA11y } from "@/lib/field-a11y"
 
 const NO_CATEGORY = ""
 

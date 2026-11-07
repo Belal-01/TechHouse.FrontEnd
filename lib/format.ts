@@ -31,3 +31,22 @@ export function formatMoney(value: number): string {
 export function formatDate(value: string | Date): string {
   return dateFormatter.format(typeof value === "string" ? new Date(value) : value)
 }
+
+const unitCostFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 4,
+})
+
+/** Per-unit cost with up to 4 decimals ("$33.3334"), where cents alone would hide the shipping share. dir="ltr". */
+export function formatUnitCost(value: number): string {
+  return unitCostFormatter.format(value)
+}
+
+const integerFormatter = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 })
+
+/** Quantities and counts: "1,250". */
+export function formatQuantity(value: number): string {
+  return integerFormatter.format(value)
+}

@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, type ReactNode } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ArrowRight, LoaderCircle, Trash2 } from "lucide-react"
+import { LoaderCircle, Trash2 } from "lucide-react"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { ButtonLink } from "@/components/common/button-link"
+import { FormPageHeader } from "@/components/common/form-page-header"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useUnsavedChangesWarning } from "@/hooks/use-unsaved-changes-warning"
@@ -79,31 +79,28 @@ export function ProductForm({ product, mediaSlot }: ProductFormProps) {
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} noValidate aria-busy={isPending} className="flex flex-col gap-6">
-        {/* Sticky under the app header so Save stays reachable on long forms. */}
-        <div className="sticky top-16 z-10 -mx-4 -mt-6 flex flex-col gap-3 border-b bg-background px-4 py-4 sm:-mx-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:-mx-8 lg:-mt-8 lg:px-8">
-          <div className="flex min-w-0 flex-col gap-1">
-            <Link href="/catalog/products" className="inline-flex items-center gap-1 small text-muted-foreground hover:text-foreground">
-              <ArrowRight className="size-4" aria-hidden />
-              المنتجات
-            </Link>
-            <h1 className="truncate h2">{title}</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            {isEdit ? (
-              <Button type="button" variant="ghost" onClick={() => setRemoval((s) => ({ open: true, session: s.session + 1 }))}>
-                <Trash2 aria-hidden />
-                حذف
+        <FormPageHeader
+          title={title}
+          backHref="/catalog/products"
+          backLabel="المنتجات"
+          actions={
+            <>
+              {isEdit ? (
+                <Button type="button" variant="ghost" onClick={() => setRemoval((s) => ({ open: true, session: s.session + 1 }))}>
+                  <Trash2 aria-hidden />
+                  حذف
+                </Button>
+              ) : null}
+              <ButtonLink variant="outline" href="/catalog/products">
+                إلغاء
+              </ButtonLink>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? <LoaderCircle className="animate-spin" aria-hidden /> : null}
+                {isEdit ? "حفظ التعديلات" : "إنشاء المنتج"}
               </Button>
-            ) : null}
-            <ButtonLink variant="outline" href="/catalog/products">
-              إلغاء
-            </ButtonLink>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? <LoaderCircle className="animate-spin" aria-hidden /> : null}
-              {isEdit ? "حفظ التعديلات" : "إنشاء المنتج"}
-            </Button>
-          </div>
-        </div>
+            </>
+          }
+        />
 
         {formError ? <Alert>{formError}</Alert> : null}
 

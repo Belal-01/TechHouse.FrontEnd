@@ -24,11 +24,19 @@ const MESSAGES: Record<string, string> = {
   IMAGE_NOT_FOUND: "الصورة غير موجودة، ربما حُذفت.",
   IMAGE_EMPTY: "الملف فارغ.",
   IMAGE_TOO_LARGE: "حجم الصورة أكبر من 5 ميغابايت.",
-  FILE_TOO_LARGE: "حجم الصورة أكبر من 5 ميغابايت.",
+  FILE_TOO_LARGE: "حجم الملف أكبر من الحد المسموح.",
   IMAGE_TYPE_NOT_ALLOWED: "صيغة غير مدعومة. استخدم JPEG أو PNG أو WebP.",
   IMAGE_LIMIT_REACHED: "وصلت إلى الحد الأقصى: 10 صور لكل منتج.",
   IMAGE_ORDER_INVALID: "تعذّر حفظ ترتيب الصور. أعد تحميل الصفحة.",
   FILE_REQUIRED: "اختر ملفاً.",
+  FILE_EMPTY: "الملف فارغ.",
+  FILE_NOT_PDF: "الملف ليس PDF. ارفع نسخة PDF من الفاتورة.",
+  SUPPLIER_NOT_FOUND: "المورد غير موجود، ربما حُذف. أعد تحميل الصفحة.",
+  SUPPLIER_NAME_EXISTS: "يوجد مورد بهذا الاسم.",
+  SUPPLIER_IN_USE: "لهذا المورد فواتير شراء، فلا يمكن حذفه. يمكنك تعطيله بدلاً من ذلك.",
+  SUPPLIER_INACTIVE: "هذا المورد غير فعّال. فعّله أولاً أو اختر مورداً آخر.",
+  INVOICE_NOT_FOUND: "الفاتورة غير موجودة.",
+  ATTACHMENT_NOT_FOUND: "لا يوجد ملف مرفق بهذه الفاتورة.",
 }
 
 const FALLBACK = "حدث خطأ غير متوقع. حاول مرة أخرى."

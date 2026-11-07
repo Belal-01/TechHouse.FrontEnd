@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FormField } from "@/components/ui/form-field"
 import { Input } from "@/components/ui/input"
 import type { ProductFormValues } from "../../schemas/product.schema"
-import { fieldA11y } from "./field-a11y"
-import { PriceInput } from "./price-input"
+import { fieldA11y } from "@/lib/field-a11y"
+import { PriceInput } from "@/components/common/price-input"
 
 export function PricingCard() {
   const {

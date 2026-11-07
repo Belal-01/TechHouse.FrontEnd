@@ -6,7 +6,7 @@ import { FormField } from "@/components/ui/form-field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import type { ProductFormValues } from "../../schemas/product.schema"
-import { fieldA11y } from "./field-a11y"
+import { fieldA11y } from "@/lib/field-a11y"
 
 export function BasicInfoCard() {
   const {

@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { formatSyp } from "@/lib/format"
 import { cn } from "@/lib/utils"
 import { useCurrentRate } from "../api/exchange-rates"
-import { SypAmount } from "./syp-amount"
+import { SypAmount } from "@/components/common/syp-amount"
 
 /**
  * Today's dollar rate, always visible in the header. Links to the exchange-rates page.

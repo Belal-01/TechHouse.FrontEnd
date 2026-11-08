@@ -1,0 +1,17 @@
+"use client"
+
+import { useQuery } from "@tanstack/react-query"
+import { api } from "@/lib/api/client"
+import type { StockItem } from "../types"
+
+export const stockKeys = {
+  all: ["inventory", "stock"] as const,
+}
+
+/** Stock per product (warehouse and on the way). Orders invalidate `stockKeys.all` when they move stock. */
+export function useStock() {
+  return useQuery({
+    queryKey: stockKeys.all,
+    queryFn: () => api.get<StockItem[]>("/admin/inventory/stock"),
+  })
+}

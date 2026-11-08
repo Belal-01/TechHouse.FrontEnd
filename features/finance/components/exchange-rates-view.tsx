@@ -18,7 +18,7 @@ import { CurrentRateCard } from "./current-rate-card"
 import { ManualRateDialog } from "./manual-rate-dialog"
 import { PendingRateCard } from "./pending-rate-card"
 import { RateSourceBadge, RateStatusBadge } from "./rate-badges"
-import { SypAmount } from "./syp-amount"
+import { SypAmount } from "@/components/common/syp-amount"
 
 const HISTORY_DAYS = 30
 

@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { formatDate, formatDateTime } from "@/lib/format"
 import type { ExchangeRate } from "../types"
 import { RateSourceBadge } from "./rate-badges"
-import { SypAmount } from "./syp-amount"
+import { SypAmount } from "@/components/common/syp-amount"
 
 export function CurrentRateCard({ rate }: { rate: ExchangeRate }) {
   return (

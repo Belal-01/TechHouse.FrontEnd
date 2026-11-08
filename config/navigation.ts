@@ -26,8 +26,8 @@ export const dashboardNavigation: NavGroup[] = [
           { title: "التصنيفات", href: "/catalog/categories" },
         ],
       },
-      { title: "الطلبات", href: "/sales/orders", icon: ShoppingCart, disabled: true },
-      { title: "الزبائن", href: "/sales/customers", icon: Users, disabled: true },
+      { title: "الطلبات", href: "/sales/orders", icon: ShoppingCart },
+      { title: "شركات التوصيل", href: "/sales/delivery-companies", icon: Truck },
     ],
   },
   {
@@ -35,7 +35,7 @@ export const dashboardNavigation: NavGroup[] = [
     items: [
       { title: "المخزون", href: "/inventory", icon: Warehouse, disabled: true },
       { title: "فواتير الشراء", href: "/purchasing/invoices", icon: ReceiptText },
-      { title: "الموردون", href: "/purchasing/suppliers", icon: Truck },
+      { title: "الموردون", href: "/purchasing/suppliers", icon: Users },
     ],
   },
   {

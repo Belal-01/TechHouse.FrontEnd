@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toUserMessage } from "@/lib/api/errors"
 import { useApproveRate } from "../api/exchange-rates"
 import type { ExchangeRate } from "../types"
-import { SypAmount } from "./syp-amount"
+import { SypAmount } from "@/components/common/syp-amount"
 
 type PendingRateCardProps = {
   pending: ExchangeRate

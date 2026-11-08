@@ -70,6 +70,8 @@ const MESSAGES: Record<string, string> = {
   PERSON_NAME_EXISTS: "يوجد شخص بهذا الاسم.",
   ADVANCE_EXCEEDS_BALANCE: "المبلغ أكبر مما عليه من سلفة بهذه العملة.",
   INVALID_PERIOD: "الفترة غير صالحة: تاريخ البداية يجب أن يسبق تاريخ النهاية.",
+  INVOICE_ALREADY_VOIDED: "هذه الفاتورة ملغاة مسبقاً.",
+  INVOICE_STOCK_USED: "لا يمكن إلغاء الفاتورة: جزء من بضاعتها بيع أو في طلب قيد التوصيل. ألغِ أو أرجِع تلك الطلبات أولاً.",
   INVOICE_NOT_FOUND: "الفاتورة غير موجودة.",
   ATTACHMENT_NOT_FOUND: "لا يوجد ملف مرفق بهذه الفاتورة.",
 }

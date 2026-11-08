@@ -8,6 +8,7 @@ import { DataTable, type DataTableColumn } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
 import { PageHeader } from "@/components/common/page-header"
 import { PaginationBar } from "@/components/common/pagination-bar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { toUserMessage } from "@/lib/api/errors"
 import { formatDate, formatMoney, formatQuantity } from "@/lib/format"
@@ -37,7 +38,10 @@ const columns: DataTableColumn<InvoiceSummary>[] = [
         >
           {invoice.invoiceNumber}
         </Link>
-        <span className="text-xs text-muted-foreground">{formatDate(invoice.invoiceDate)}</span>
+        <span className="flex items-center gap-2 text-xs text-muted-foreground">
+          {formatDate(invoice.invoiceDate)}
+          {invoice.voided ? <Badge variant="destructive">ملغاة</Badge> : null}
+        </span>
       </div>
     ),
   },
@@ -68,7 +72,7 @@ const columns: DataTableColumn<InvoiceSummary>[] = [
         {invoice.hasAttachment ? (
           <FileText className="size-4 text-muted-foreground" aria-label="مرفق PDF" role="img" />
         ) : null}
-        <span dir="ltr" className="font-semibold">
+        <span dir="ltr" className={invoice.voided ? "text-muted-foreground line-through" : "font-semibold"}>
           {formatMoney(invoice.totalUsd)}
         </span>
       </span>

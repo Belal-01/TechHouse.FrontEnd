@@ -7,15 +7,17 @@ import { DataTable, type DataTableColumn } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
 import { FormPageHeader } from "@/components/common/form-page-header"
 import { Alert } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ApiError, toUserMessage } from "@/lib/api/errors"
-import { formatDate, formatMoney, formatQuantity, formatUnitCost } from "@/lib/format"
+import { formatDate, formatDateTime, formatMoney, formatQuantity, formatUnitCost } from "@/lib/format"
 import { useInvoice } from "../api/invoices"
 import type { InvoiceItem } from "../types"
 import { InvoiceAttachmentCard } from "./invoice-attachment-card"
 import { InvoiceDetailSkeleton } from "./invoice-detail-skeleton"
 import { PaidFromBadge } from "./paid-from-badge"
+import { VoidInvoiceButton } from "./void-invoice-button"
 
 const money = (value: number) => <span dir="ltr">{formatMoney(value)}</span>
 
@@ -98,7 +100,27 @@ export function InvoiceDetailView({ invoiceId }: { invoiceId: string }) {
   const data = invoice.data
   return (
     <div className="flex flex-col gap-6">
-      <FormPageHeader title={<span dir="ltr">{data.invoiceNumber}</span>} backHref="/purchasing/invoices" backLabel="فواتير الشراء" />
+      <FormPageHeader
+        title={
+          <span className="inline-flex items-center gap-3">
+            <span dir="ltr">{data.invoiceNumber}</span>
+            {data.voidedAt ? <Badge variant="destructive">ملغاة</Badge> : null}
+          </span>
+        }
+        backHref="/purchasing/invoices"
+        backLabel="فواتير الشراء"
+        actions={data.voidable ? <VoidInvoiceButton invoiceId={data.id} invoiceNumber={data.invoiceNumber} /> : null}
+      />
+      {data.voidedAt ? (
+        <Alert>
+          أُلغيت هذه الفاتورة في {formatDateTime(data.voidedAt)}: خرجت بضاعتها من المخزون وعاد مبلغها إلى الصندوق.
+          {data.voidNote ? ` السبب: ${data.voidNote}` : ""}
+        </Alert>
+      ) : !data.voidable ? (
+        <p className="small text-muted-foreground">
+          لا يمكن إلغاء هذه الفاتورة لأن جزءاً من بضاعتها بيع أو في طلب قيد التوصيل. لإلغائها، ألغِ أو أرجِع تلك الطلبات أولاً.
+        </p>
+      ) : null}
 
       {/* Summary first, then the full-width items table: six columns need the whole page width. */}
       <div className="grid gap-6 md:grid-cols-2 md:items-start">

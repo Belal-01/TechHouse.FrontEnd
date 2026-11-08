@@ -2,6 +2,7 @@
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useInvalidateCash } from "@/features/finance"
+import { stockKeys } from "@/features/inventory"
 import { api, proxyUrl } from "@/lib/api/client"
 import type { PageResponse } from "@/lib/api/types"
 import type { InvoiceDetail, InvoiceInput, InvoiceListParams, InvoiceSummary } from "../types"
@@ -70,6 +71,24 @@ export function useUploadInvoiceAttachment() {
         queryClient.invalidateQueries({ queryKey: invoiceKeys.detail(invoiceId) }),
         queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() }),
       ]),
+  })
+}
+
+/** Voiding takes the stock out and gives the money back: refresh invoices, stock and balances. */
+export function useVoidInvoice(invoiceId: string) {
+  const queryClient = useQueryClient()
+  const invalidateCash = useInvalidateCash()
+  return useMutation({
+    mutationFn: (note: string) =>
+      api.post<InvoiceDetail>(`${BASE}/${encodeURIComponent(invoiceId)}/void`, { note: note.trim() || null }),
+    onSuccess: (invoice) => {
+      queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice)
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() }),
+        queryClient.invalidateQueries({ queryKey: stockKeys.all }),
+        invalidateCash(),
+      ])
+    },
   })
 }
 

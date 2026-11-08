@@ -33,7 +33,7 @@ export const dashboardNavigation: NavGroup[] = [
   {
     label: "المخزون والمشتريات",
     items: [
-      { title: "المخزون", href: "/inventory", icon: Warehouse, disabled: true },
+      { title: "المخزون", href: "/inventory", icon: Warehouse },
       { title: "فواتير الشراء", href: "/purchasing/invoices", icon: ReceiptText },
       { title: "الموردون", href: "/purchasing/suppliers", icon: Users },
     ],

@@ -31,7 +31,7 @@ const stockColumns: DataTableColumn<Wealth["stock"][number]>[] = [
     className: "whitespace-normal!",
     cell: (s) => (
       <div className="flex flex-col">
-        <Link href={`/catalog/products/${s.productId}`} className="font-semibold text-foreground hover:text-blue hover:underline">
+        <Link href={`/inventory/${s.productId}`} className="font-semibold text-foreground hover:text-blue hover:underline">
           {s.name}
         </Link>
         <span className="text-xs text-muted-foreground">

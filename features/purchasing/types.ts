@@ -59,6 +59,11 @@ export type InvoiceDetail = {
   items: InvoiceItem[]
   version: number
   createdAt: string
+  /** Set when voided (entered by mistake). */
+  voidedAt?: string | null
+  voidNote?: string | null
+  /** Can still be voided: not voided and none of its units sold or on the way. */
+  voidable: boolean
 }
 
 export type InvoiceSummary = {
@@ -70,6 +75,7 @@ export type InvoiceSummary = {
   totalUsd: number
   paidFrom: PaidFrom
   hasAttachment: boolean
+  voided: boolean
 }
 
 export type InvoiceInput = {

@@ -34,7 +34,7 @@ export function AlertsCard({ alerts, rate, returns }: AlertsCardProps) {
             <ul className="flex flex-col gap-1">
               {alerts.lowStock.map((p) => (
                 <li key={p.productId} className="flex justify-between gap-3">
-                  <Link href={`/catalog/products/${p.productId}`} className="truncate hover:text-blue hover:underline">
+                  <Link href={`/inventory/${p.productId}`} className="truncate hover:text-blue hover:underline">
                     {p.name}
                   </Link>
                   <span className={p.available === 0 ? "shrink-0 text-red" : "shrink-0 text-muted-foreground"}>

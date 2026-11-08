@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
-import { ChartNoAxesCombined } from "lucide-react"
-import { EmptyState } from "@/components/common/empty-state"
 import { PageHeader } from "@/components/common/page-header"
 import { Skeleton } from "@/components/ui/skeleton"
 import { requireSession } from "@/features/auth/server"
+import { DashboardView } from "@/features/dashboard"
 
 export const metadata: Metadata = {
   title: "لوحة التحكم",
@@ -21,11 +20,10 @@ export default function DashboardPage() {
           </Suspense>
         }
       />
-      <EmptyState
-        icon={ChartNoAxesCombined}
-        title="لا توجد بيانات بعد"
-        description="ستظهر هنا مؤشرات الإيراد والربح والكاش والمخزون بعد إدخال أول فاتورة شراء وأول طلب."
-      />
+      {/* The period is read from the URL (request-time data). */}
+      <Suspense>
+        <DashboardView />
+      </Suspense>
     </div>
   )
 }

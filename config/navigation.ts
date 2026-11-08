@@ -44,6 +44,7 @@ export const dashboardNavigation: NavGroup[] = [
         title: "المالية",
         icon: Wallet,
         items: [
+          { title: "الثروة", href: "/wealth" },
           { title: "الصناديق", href: "/finance/wallets" },
           { title: "المصاريف", href: "/finance/expenses" },
           { title: "السلف", href: "/finance/advances" },

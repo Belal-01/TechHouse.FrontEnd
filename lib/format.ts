@@ -15,16 +15,12 @@ export function regionName(countryCode: string): string {
 }
 
 // "$800" rather than the Arabic locale's "800 US$"; render inside dir="ltr" so it stays in this order.
-const moneyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-})
+const wholeMoneyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+const centsMoneyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-/** USD amount → "$1,234.5". Wrap the result in an element with dir="ltr". */
+/** USD amount → "$1,234" or "$1,234.50" (cents shown in full when there are any). Wrap in dir="ltr". */
 export function formatMoney(value: number): string {
-  return moneyFormatter.format(value)
+  return Math.round(value * 100) % 100 === 0 ? wholeMoneyFormatter.format(value) : centsMoneyFormatter.format(value)
 }
 
 /** ISO timestamp or Date → numeric date, e.g. "2026/11/03" (avoids month names that differ between Syria and Libya). */
@@ -63,4 +59,30 @@ const dateTimeFormatter = new Intl.DateTimeFormat(LOCALE, { dateStyle: "medium",
 /** ISO timestamp → date and time, e.g. "2026/11/08، 10:00 ص". */
 export function formatDateTime(value: string | Date): string {
   return dateTimeFormatter.format(typeof value === "string" ? new Date(value) : value)
+}
+
+const compactMoneyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  notation: "compact",
+  maximumFractionDigits: 1,
+})
+
+/** Short USD for chart axes: "$1.2K". dir="ltr". */
+export function formatMoneyCompact(value: number): string {
+  return compactMoneyFormatter.format(value)
+}
+
+// Latin locale on purpose: the Arabic one inserts direction marks that scramble "1/11" inside a left-to-right chart.
+const dayMonthFormatter = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "numeric" })
+// Syrian month names ("تشرين الثاني"), the ones the shop's customers use.
+const monthYearFormatter = new Intl.DateTimeFormat("ar-SY-u-nu-latn", { month: "long", year: "numeric" })
+
+/** "8/11" for chart days; "تشرين الثاني 2026" style for months. */
+export function formatDayMonth(value: string | Date): string {
+  return dayMonthFormatter.format(typeof value === "string" ? new Date(`${value}T00:00:00`) : value)
+}
+
+export function formatMonthYear(value: string | Date): string {
+  return monthYearFormatter.format(typeof value === "string" ? new Date(`${value}T00:00:00`) : value)
 }

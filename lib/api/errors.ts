@@ -69,6 +69,7 @@ const MESSAGES: Record<string, string> = {
   PERSON_INACTIVE: "هذا الشخص غير فعّال.",
   PERSON_NAME_EXISTS: "يوجد شخص بهذا الاسم.",
   ADVANCE_EXCEEDS_BALANCE: "المبلغ أكبر مما عليه من سلفة بهذه العملة.",
+  INVALID_PERIOD: "الفترة غير صالحة: تاريخ البداية يجب أن يسبق تاريخ النهاية.",
   INVOICE_NOT_FOUND: "الفاتورة غير موجودة.",
   ATTACHMENT_NOT_FOUND: "لا يوجد ملف مرفق بهذه الفاتورة.",
 }

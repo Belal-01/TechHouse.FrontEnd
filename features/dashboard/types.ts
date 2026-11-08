@@ -15,6 +15,8 @@ export type WealthTotals = {
 export type Dashboard = {
   period: { from: string; to: string }
   pnl: { revenueUsd: number; cogsUsd: number; grossProfitUsd: number; expensesUsd: number; netProfitUsd: number; deliveredOrders: number }
+  /** percent of the period's net profit (0 when there is no profit). */
+  profitShare: { label: string; percent: number; amountUsd: number }
   wealth: WealthTotals
   pending: { count: number; revenueUsd: number; expectedProfitUsd: number }
   series: { date: string; revenueUsd: number; netProfitUsd: number }[]

@@ -19,16 +19,18 @@ type StatTileProps = VariantProps<typeof valueVariants> & {
   hint?: ReactNode
   /** Makes the whole tile a link to the screen behind the number. */
   href?: string
+  /** A control in the corner, e.g. an edit button (not combined with `href`). */
+  action?: ReactNode
   className?: string
 }
 
 /** A single headline number with its label; used instead of a chart when one number is the answer. */
-export function StatTile({ label, value, hint, href, tone, className }: StatTileProps) {
+export function StatTile({ label, value, hint, href, action, tone, className }: StatTileProps) {
   const body = (
     <>
-      <span className="flex items-center justify-between gap-2 small text-muted-foreground">
-        {label}
-        {href ? <ChevronLeft className="size-4 shrink-0" aria-hidden /> : null}
+      <span className="flex min-h-6 items-center justify-between gap-2 small text-muted-foreground">
+        <span className="truncate">{label}</span>
+        {href ? <ChevronLeft className="size-4 shrink-0" aria-hidden /> : action}
       </span>
       <span className={valueVariants({ tone })}>{value}</span>
       {hint ? <span className="small text-muted-foreground">{hint}</span> : null}

@@ -1,6 +1,7 @@
 import { StatTile } from "@/components/common/stat-tile"
 import { formatMoney, formatQuantity } from "@/lib/format"
 import type { Dashboard } from "../types"
+import { ProfitShareTile } from "./profit-share-tile"
 
 const usd = (value: number) => <span dir="ltr">{formatMoney(value)}</span>
 
@@ -30,18 +31,22 @@ export function KpiTiles({ data }: { data: Dashboard }) {
           href="/sales/orders?status=PENDING"
         />
       </div>
-      <StatTile
-        label="كل ما يملكه المتجر"
-        value={usd(wealth.totalUsd)}
-        tone="accent"
-        hint={
-          <>
-            كاش {usd(wealth.cashUsd)} · مخزون {usd(wealth.inventoryUsd + wealth.inTransitUsd)} · سلف {usd(wealth.advancesUsd)}
-            {wealth.sypExcluded ? " · الليرة غير محسوبة: لا يوجد سعر صرف" : null}
-          </>
-        }
-        href="/wealth"
-      />
+      <div className="grid gap-4 lg:grid-cols-3">
+        <ProfitShareTile share={data.profitShare} netProfitUsd={pnl.netProfitUsd} />
+        <StatTile
+          className="lg:col-span-2"
+          label="كل ما يملكه المتجر"
+          value={usd(wealth.totalUsd)}
+          tone="accent"
+          hint={
+            <>
+              كاش {usd(wealth.cashUsd)} · مخزون {usd(wealth.inventoryUsd + wealth.inTransitUsd)} · سلف {usd(wealth.advancesUsd)}
+              {wealth.sypExcluded ? " · الليرة غير محسوبة: لا يوجد سعر صرف" : null}
+            </>
+          }
+          href="/wealth"
+        />
+      </div>
     </div>
   )
 }

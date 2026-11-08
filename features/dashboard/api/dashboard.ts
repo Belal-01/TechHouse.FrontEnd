@@ -1,6 +1,6 @@
 "use client"
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api/client"
 import type { Dashboard, Wealth } from "../types"
 
@@ -17,6 +17,16 @@ export function useDashboard(from: string, to: string) {
     queryFn: () => api.get<Dashboard>(`/admin/dashboard?from=${from}&to=${to}`),
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: true,
+  })
+}
+
+export type ProfitShareInput = { label: string; percent: number }
+
+export function useUpdateProfitShare() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: ProfitShareInput) => api.put<Dashboard["profitShare"]>("/admin/dashboard/profit-share", input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: dashboardKeys.all }),
   })
 }
 

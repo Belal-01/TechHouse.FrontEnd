@@ -55,7 +55,7 @@ export function ManualRateDialog({ open, onOpenChange, initial }: ManualRateDial
       open={open}
       onOpenChange={onOpenChange}
       title="إدخال سعر اليوم يدوياً"
-      description="بالليرة السورية لكل دولار واحد. يُستخدم سعر المبيع في البيع، ولا يستبدل التحديث التلقائي هذا السعر اليوم."
+      description="بالليرة السورية الجديدة لكل دولار واحد (مثلاً 145، لا 14,500). يُستخدم سعر المبيع في البيع، ولا يستبدل التحديث التلقائي هذا السعر اليوم."
       submitLabel="حفظ السعر"
       cancelLabel="إلغاء"
       onSubmit={onSubmit}
@@ -64,10 +64,10 @@ export function ManualRateDialog({ open, onOpenChange, initial }: ManualRateDial
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField id="rate-buy" label="سعر الشراء" error={errors.buyRate?.message}>
-          <Input id="rate-buy" inputMode="decimal" dir="ltr" placeholder="14450" {...fieldA11y("rate-buy", errors.buyRate)} {...register("buyRate")} />
+          <Input id="rate-buy" inputMode="decimal" dir="ltr" placeholder="144.5" {...fieldA11y("rate-buy", errors.buyRate)} {...register("buyRate")} />
         </FormField>
         <FormField id="rate-sell" label="سعر المبيع" error={errors.sellRate?.message}>
-          <Input id="rate-sell" inputMode="decimal" dir="ltr" placeholder="14525" {...fieldA11y("rate-sell", errors.sellRate)} {...register("sellRate")} />
+          <Input id="rate-sell" inputMode="decimal" dir="ltr" placeholder="145.25" {...fieldA11y("rate-sell", errors.sellRate)} {...register("sellRate")} />
         </FormField>
       </div>
     </FormDialog>

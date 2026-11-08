@@ -39,7 +39,7 @@ export function ExchangeRateIndicator() {
     >
       {needsAttention ? <CircleAlert className="size-4 shrink-0" aria-hidden /> : <DollarSign className="size-4 shrink-0 text-blue" aria-hidden />}
       {current ? (
-        // Phones: "14,450 / 14,525"; wider screens add the labels and the unit.
+        // Phones: "144.5 / 145.25"; wider screens add the labels and the unit.
         <span className="flex items-baseline gap-1.5 whitespace-nowrap">
           <span className="hidden font-normal text-muted-foreground sm:inline">شراء</span>
           <SypAmount value={current.buyRate} hideUnit />

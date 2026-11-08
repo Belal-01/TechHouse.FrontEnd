@@ -25,7 +25,7 @@ import { DeliveryCard } from "./delivery-card"
 import { LinesCard } from "./lines-card"
 import { SummaryCard } from "./summary-card"
 
-const FORM_FIELDS = ["customerName", "customerPhone", "customerAddress", "currency", "deliveryCompanyId", "deliveryCost", "deliveryCostCurrency", "deliveryFeeCharged", "notes"]
+const FORM_FIELDS = ["customerName", "customerPhone", "customerAddress", "currency", "deliveryCompanyId", "deliveryAccountId", "deliveryCost", "deliveryCostCurrency", "deliveryFeeCharged", "notes"]
 
 function mapOrderField(path: string): string | null {
   if (/^items\.\d+\.(productId|quantity|unitPrice)$/.test(path)) return path

@@ -185,6 +185,7 @@ export function OrderDetailView({ orderId }: { orderId: string }) {
                 ) : null}
                 {data.customer.address ? <Row label="العنوان">{data.customer.address}</Row> : null}
                 <Row label="شركة التوصيل">{data.deliveryCompany?.name ?? "—"}</Row>
+                {data.paymentAccount ? <Row label="وصل المبلغ إلى">{data.paymentAccount.name}</Row> : null}
                 {data.deliveryCost > 0 && data.deliveryCostCurrency ? (
                   <Row label="أجرة الشركة">
                     <MoneyAmount value={data.deliveryCost} currency={data.deliveryCostCurrency} />

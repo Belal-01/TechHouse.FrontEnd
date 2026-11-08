@@ -1,6 +1,7 @@
 "use client"
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInvalidateCash } from "@/features/finance"
 import { stockKeys } from "@/features/inventory"
 import { api } from "@/lib/api/client"
 import type { PageResponse } from "@/lib/api/types"
@@ -36,11 +37,13 @@ export function useOrder(id: string) {
 /** Orders move stock and money: refresh lists, stock and (via the server) nothing else is cached that depends on them. */
 function useStoreSavedOrder() {
   const queryClient = useQueryClient()
+  const invalidateCash = useInvalidateCash()
   return (order: OrderDetail) => {
     queryClient.setQueryData(orderKeys.detail(order.id), order)
     return Promise.all([
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() }),
       queryClient.invalidateQueries({ queryKey: stockKeys.all }),
+      invalidateCash(),
     ])
   }
 }
@@ -56,8 +59,11 @@ export function useCreateOrder() {
 export function useOrderTransition(orderId: string) {
   const storeSaved = useStoreSavedOrder()
   return useMutation({
-    mutationFn: ({ transition, note }: { transition: OrderTransition; note: string }) =>
-      api.post<OrderDetail>(`${BASE}/${encodeURIComponent(orderId)}/${transition}`, { note: note.trim() || null }),
+    mutationFn: ({ transition, note, accountId }: { transition: OrderTransition; note: string; accountId?: string }) =>
+      api.post<OrderDetail>(`${BASE}/${encodeURIComponent(orderId)}/${transition}`, {
+        note: note.trim() || null,
+        ...(accountId ? { accountId } : {}),
+      }),
     onSuccess: storeSaved,
   })
 }

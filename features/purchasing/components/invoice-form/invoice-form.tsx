@@ -27,7 +27,7 @@ import { LinesCard } from "./lines-card"
 /** Server field paths → form paths. items[0].productId arrives as items.0.productId. */
 function mapInvoiceField(path: string): string | null {
   if (/^items\.\d+\.(productId|quantity|unitPriceUsd)$/.test(path)) return path
-  return ["supplierId", "invoiceDate", "paidFrom", "shippingCostUsd", "customsCostUsd", "notes"].includes(path) ? path : null
+  return ["supplierId", "invoiceDate", "paidFrom", "accountId", "shippingCostUsd", "customsCostUsd", "notes"].includes(path) ? path : null
 }
 
 const SUPPLIER_CODES = { SUPPLIER_NOT_FOUND: "supplierId", SUPPLIER_INACTIVE: "supplierId" } as const

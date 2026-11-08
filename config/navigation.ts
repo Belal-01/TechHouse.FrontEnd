@@ -44,8 +44,9 @@ export const dashboardNavigation: NavGroup[] = [
         title: "المالية",
         icon: Wallet,
         items: [
-          { title: "المحافظ", href: "/finance/wallets", disabled: true },
-          { title: "المصاريف", href: "/finance/expenses", disabled: true },
+          { title: "الصناديق", href: "/finance/wallets" },
+          { title: "المصاريف", href: "/finance/expenses" },
+          { title: "السلف", href: "/finance/advances" },
           { title: "أسعار الصرف", href: "/finance/exchange-rates" },
           { title: "التقارير", href: "/finance/reports", disabled: true },
         ],

@@ -1,6 +1,7 @@
 "use client"
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInvalidateCash } from "@/features/finance"
 import { api, proxyUrl } from "@/lib/api/client"
 import type { PageResponse } from "@/lib/api/types"
 import type { InvoiceDetail, InvoiceInput, InvoiceListParams, InvoiceSummary } from "../types"
@@ -38,11 +39,13 @@ export function useInvoice(id: string) {
 
 export function useCreateInvoice() {
   const queryClient = useQueryClient()
+  const invalidateCash = useInvalidateCash()
   return useMutation({
     mutationFn: (input: InvoiceInput) => api.post<InvoiceDetail>(BASE, input),
     onSuccess: (invoice) => {
       queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice)
-      return queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() })
+      // Paying the invoice moved money out of a box.
+      return Promise.all([queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() }), invalidateCash()])
     },
   })
 }

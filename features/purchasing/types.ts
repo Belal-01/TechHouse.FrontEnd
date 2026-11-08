@@ -52,6 +52,8 @@ export type InvoiceDetail = {
   itemsTotalUsd: number
   totalUsd: number
   paidFrom: PaidFrom
+  /** The box that paid. */
+  account?: SupplierRef | null
   notes?: string | null
   hasAttachment: boolean
   items: InvoiceItem[]
@@ -76,6 +78,8 @@ export type InvoiceInput = {
   shippingCostUsd: number
   customsCostUsd: number
   paidFrom: PaidFrom
+  /** null = the default box. */
+  accountId: string | null
   notes: string | null
   items: { productId: string; quantity: number; unitPriceUsd: number }[]
 }

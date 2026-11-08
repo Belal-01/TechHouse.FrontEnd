@@ -113,6 +113,7 @@ export function InvoiceDetailView({ invoiceId }: { invoiceId: string }) {
               <Row label="مصدر الدفع">
                 <PaidFromBadge paidFrom={data.paidFrom} />
               </Row>
+              {data.account ? <Row label="الصندوق">{data.account.name}</Row> : null}
               <Row label="قيمة البضاعة">{money(data.itemsTotalUsd)}</Row>
               <Row label="الشحن">{money(data.shippingCostUsd)}</Row>
               {data.customsCostUsd > 0 ? <Row label="جمارك وتخليص">{money(data.customsCostUsd)}</Row> : null}

@@ -6,6 +6,7 @@ import { FormField } from "@/components/ui/form-field"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { CashAccountSelect, useCashAccounts } from "@/features/finance"
 import { fieldA11y } from "@/lib/field-a11y"
 import { PAID_FROM_LABELS } from "../../lib/invoice-form"
 import type { InvoiceFormValues } from "../../schemas/invoice.schema"
@@ -24,6 +25,7 @@ export function DetailsCard() {
     formState: { errors },
   } = useFormContext<InvoiceFormValues>()
   const paidFrom = watch("paidFrom")
+  const defaultBox = useCashAccounts().data?.find((a) => a.isDefault)?.name
 
   return (
     <Card>
@@ -60,7 +62,7 @@ export function DetailsCard() {
               label="مصدر الدفع"
               description={
                 paidFrom === "INCOME"
-                  ? "يُخصم المبلغ من محفظة الدولار."
+                  ? "يُخصم المبلغ من رصيد الدولار في الصندوق المختار."
                   : "مال جديد تضعه في المتجر لهذه الفاتورة: يدخل ويخرج، فلا يتغير رصيد المحفظة."
               }
             >
@@ -76,6 +78,21 @@ export function DetailsCard() {
                   ))}
                 </SelectContent>
               </Select>
+            </FormField>
+          )}
+        />
+        <Controller
+          control={control}
+          name="accountId"
+          render={({ field }) => (
+            <FormField id="invoice-account" label="الدفع من صندوق" error={errors.accountId?.message}>
+              <CashAccountSelect
+                id="invoice-account"
+                emptyLabel={defaultBox ? `${defaultBox} (الافتراضي)` : "الصندوق الافتراضي"}
+                value={field.value}
+                onValueChange={field.onChange}
+                {...fieldA11y("invoice-account", errors.accountId)}
+              />
             </FormField>
           )}
         />

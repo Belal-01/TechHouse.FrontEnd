@@ -32,6 +32,7 @@ export const invoiceFormSchema = z.object({
   supplierId: z.string(),
   invoiceDate: z.iso.date({ error: "أدخل تاريخ الفاتورة." }),
   paidFrom: z.enum(["INCOME", "EXTERNAL_CAPITAL"]),
+  accountId: z.string(),
   shippingCostUsd: optionalAmount,
   customsCostUsd: optionalAmount,
   notes: z.string().max(5000, { error: "5000 حرف كحد أقصى." }),

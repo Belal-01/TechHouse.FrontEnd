@@ -3,18 +3,16 @@
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 import { Plus } from "lucide-react"
+import { CurrencySelect } from "@/components/common/currency-select"
+import { CashAccountSelect, useCashAccounts } from "@/features/finance"
 import { PriceInput } from "@/components/common/price-input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormField } from "@/components/ui/form-field"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { fieldA11y } from "@/lib/field-a11y"
-import { CURRENCY_LABELS } from "../../lib/order-form"
 import type { OrderFormValues } from "../../schemas/order.schema"
 import { DeliveryCompanyFormDialog } from "../delivery-company-form-dialog"
 import { DeliveryCompanySelect } from "../delivery-company-select"
-
-export const CURRENCY_ITEMS = (["USD", "SYP"] as const).map((value) => ({ value, label: CURRENCY_LABELS[value] }))
 
 export function DeliveryCard() {
   const {
@@ -24,7 +22,8 @@ export function DeliveryCard() {
     watch,
     formState: { errors },
   } = useFormContext<OrderFormValues>()
-  const [costCurrency, currency] = watch(["deliveryCostCurrency", "currency"])
+  const [costCurrency, currency, deliveryCost] = watch(["deliveryCostCurrency", "currency", "deliveryCost"])
+  const defaultBox = useCashAccounts().data?.find((a) => a.isDefault)?.name
   const [newCompany, setNewCompany] = useState({ open: false, session: 0 })
 
   return (
@@ -71,22 +70,28 @@ export function DeliveryCard() {
             name="deliveryCostCurrency"
             render={({ field }) => (
               <FormField id="order-delivery-currency" label="العملة">
-                <Select items={CURRENCY_ITEMS} value={field.value} onValueChange={(value) => value && field.onChange(value)}>
-                  <SelectTrigger id="order-delivery-currency" className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CURRENCY_ITEMS.map((item) => (
-                      <SelectItem key={item.value} value={item.value}>
-                        {item.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <CurrencySelect id="order-delivery-currency" value={field.value} onValueChange={field.onChange} />
               </FormField>
             )}
           />
         </div>
+        {Number(deliveryCost) > 0 ? (
+          <Controller
+            control={control}
+            name="deliveryAccountId"
+            render={({ field }) => (
+              <FormField id="order-delivery-account" label="تُدفع من" error={errors.deliveryAccountId?.message}>
+                <CashAccountSelect
+                  id="order-delivery-account"
+                  emptyLabel={defaultBox ? `${defaultBox} (الافتراضي)` : "الصندوق الافتراضي"}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  {...fieldA11y("order-delivery-account", errors.deliveryAccountId)}
+                />
+              </FormField>
+            )}
+          />
+        ) : null}
         <FormField
           id="order-fee-charged"
           label="رسوم توصيل على الزبون"

@@ -7,14 +7,13 @@ export const emptyOrderForm: OrderFormValues = {
   customerAddress: "",
   currency: "USD",
   deliveryCompanyId: "",
+  deliveryAccountId: "",
   deliveryCost: "",
   deliveryCostCurrency: "SYP",
   deliveryFeeCharged: "",
   notes: "",
   items: [],
 }
-
-export const CURRENCY_LABELS = { USD: "دولار", SYP: "ليرة سورية" } as const
 
 const blankToNull = (value: string) => (value.trim() === "" ? null : value.trim())
 
@@ -34,6 +33,7 @@ export function toOrderInput(form: OrderFormValues): OrderInput {
     deliveryCost: Number(form.deliveryCost || 0),
     deliveryCostCurrency: form.deliveryCostCurrency,
     deliveryCompanyId: form.deliveryCompanyId || null,
+    deliveryAccountId: form.deliveryAccountId || null,
     notes: blankToNull(form.notes),
   }
 }

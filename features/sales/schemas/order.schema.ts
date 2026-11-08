@@ -39,6 +39,7 @@ export const orderFormSchema = z
     customerAddress: z.string().max(2000, { error: "2000 حرف كحد أقصى." }),
     currency: z.enum(["USD", "SYP"]),
     deliveryCompanyId: z.string(),
+    deliveryAccountId: z.string(),
     deliveryCost: optionalAmount,
     deliveryCostCurrency: z.enum(["USD", "SYP"]),
     deliveryFeeCharged: optionalAmount,

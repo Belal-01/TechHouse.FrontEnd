@@ -2,18 +2,17 @@
 
 import Link from "next/link"
 import { Controller, useFormContext, useWatch } from "react-hook-form"
+import { CurrencySelect } from "@/components/common/currency-select"
 import { MoneyAmount } from "@/components/common/money-amount"
 import { SypAmount } from "@/components/common/syp-amount"
 import { Alert } from "@/components/ui/alert"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormField } from "@/components/ui/form-field"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { fieldA11y } from "@/lib/field-a11y"
 import { formatMoney } from "@/lib/format"
 import type { OrderFormValues } from "../../schemas/order.schema"
-import { CURRENCY_ITEMS } from "./delivery-card"
 
 type SummaryCardProps = {
   /** Sell rate in use (SYP per USD), or null when there is none yet. */
@@ -46,18 +45,7 @@ export function SummaryCard({ sellRate, onCurrencyChange }: SummaryCardProps) {
           name="currency"
           render={({ field }) => (
             <FormField id="order-currency" label="عملة البيع" description="بها يدفع الزبون، وإليها تدخل المحفظة.">
-              <Select items={CURRENCY_ITEMS} value={field.value} onValueChange={(value) => value && onCurrencyChange(value)}>
-                <SelectTrigger id="order-currency" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CURRENCY_ITEMS.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <CurrencySelect id="order-currency" value={field.value} onValueChange={onCurrencyChange} />
             </FormField>
           )}
         />

@@ -52,6 +52,8 @@ export type OrderDetail = {
   deliveryCost: number
   deliveryCostCurrency?: Currency | null
   deliveryCompany?: Ref | null
+  /** The box the customer's money went into (delivered orders). */
+  paymentAccount?: Ref | null
   money: OrderMoney
   notes?: string | null
   orderedAt: string
@@ -72,6 +74,8 @@ export type OrderInput = {
   deliveryCost: number
   deliveryCostCurrency: Currency
   deliveryCompanyId: string | null
+  /** The box that pays the delivery company; null = the default box. */
+  deliveryAccountId: string | null
   notes: string | null
 }
 

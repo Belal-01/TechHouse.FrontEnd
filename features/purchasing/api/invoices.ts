@@ -1,11 +1,12 @@
 "use client"
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useInvalidateCash } from "@/features/finance"
+import { dashboardKeys } from "@/features/dashboard"
+import { useInvalidateCash, useInvalidatePartners } from "@/features/finance"
 import { stockKeys } from "@/features/inventory"
 import { api, proxyUrl } from "@/lib/api/client"
 import type { PageResponse } from "@/lib/api/types"
-import type { InvoiceDetail, InvoiceInput, InvoiceListParams, InvoiceSummary } from "../types"
+import type { AssignInput, CostInput, InvoiceDetail, InvoiceInput, InvoiceListParams, InvoiceSummary } from "../types"
 
 const BASE = "/admin/procurement/invoices"
 
@@ -24,6 +25,7 @@ export function invoiceAttachmentUrl(invoiceId: string): string {
 export function useInvoices(params: InvoiceListParams) {
   const query = new URLSearchParams({ page: String(params.page), size: String(params.size) })
   if (params.supplierId) query.set("supplierId", params.supplierId)
+  if (params.status) query.set("status", params.status)
   return useQuery({
     queryKey: invoiceKeys.list(params),
     queryFn: () => api.get<PageResponse<InvoiceSummary>>(`${BASE}?${query.toString()}`),
@@ -38,16 +40,64 @@ export function useInvoice(id: string) {
   })
 }
 
-export function useCreateInvoice() {
+/**
+ * After anything that changes an invoice: store the fresh invoice and refresh what it affects (the list, stock,
+ * box balances and the partners' funded totals).
+ */
+function useInvoiceSaved() {
   const queryClient = useQueryClient()
   const invalidateCash = useInvalidateCash()
+  const invalidatePartners = useInvalidatePartners()
+  return (invoice: InvoiceDetail) => {
+    queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice)
+    return Promise.all([
+      queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() }),
+      queryClient.invalidateQueries({ queryKey: stockKeys.all }),
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.all }),
+      invalidateCash(),
+      invalidatePartners(),
+    ])
+  }
+}
+
+export function useCreateInvoice() {
+  const saved = useInvoiceSaved()
+  return useMutation({ mutationFn: (input: InvoiceInput) => api.post<InvoiceDetail>(BASE, input), onSuccess: saved })
+}
+
+/** The goods arrived: arrival costs, then the stock becomes sellable. */
+export function useReceiveInvoice(invoiceId: string) {
+  const saved = useInvoiceSaved()
   return useMutation({
-    mutationFn: (input: InvoiceInput) => api.post<InvoiceDetail>(BASE, input),
-    onSuccess: (invoice) => {
-      queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice)
-      // Paying the invoice moved money out of a box.
-      return Promise.all([queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() }), invalidateCash()])
-    },
+    mutationFn: (costs: CostInput[]) => api.post<InvoiceDetail>(`${BASE}/${encodeURIComponent(invoiceId)}/receive`, { costs }),
+    onSuccess: saved,
+  })
+}
+
+export function useAddInvoiceCost(invoiceId: string) {
+  const saved = useInvoiceSaved()
+  return useMutation({
+    mutationFn: (cost: CostInput) => api.post<InvoiceDetail>(`${BASE}/${encodeURIComponent(invoiceId)}/costs`, cost),
+    onSuccess: saved,
+  })
+}
+
+export function useRemoveInvoiceCost(invoiceId: string) {
+  const saved = useInvoiceSaved()
+  return useMutation({
+    mutationFn: (costId: string) =>
+      api.delete<InvoiceDetail>(`${BASE}/${encodeURIComponent(invoiceId)}/costs/${encodeURIComponent(costId)}`),
+    onSuccess: saved,
+  })
+}
+
+/** Says whose money an unassigned outside payment was. */
+export function useAssignFunding(invoiceId: string) {
+  const saved = useInvoiceSaved()
+  return useMutation({
+    mutationFn: ({ paymentId, ...input }: AssignInput & { paymentId: string }) =>
+      api.post<InvoiceDetail>(`${BASE}/${encodeURIComponent(invoiceId)}/payments/${encodeURIComponent(paymentId)}/assign`, input),
+    onSuccess: saved,
   })
 }
 
@@ -76,19 +126,11 @@ export function useUploadInvoiceAttachment() {
 
 /** Voiding takes the stock out and gives the money back: refresh invoices, stock and balances. */
 export function useVoidInvoice(invoiceId: string) {
-  const queryClient = useQueryClient()
-  const invalidateCash = useInvalidateCash()
+  const saved = useInvoiceSaved()
   return useMutation({
     mutationFn: (note: string) =>
       api.post<InvoiceDetail>(`${BASE}/${encodeURIComponent(invoiceId)}/void`, { note: note.trim() || null }),
-    onSuccess: (invoice) => {
-      queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice)
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() }),
-        queryClient.invalidateQueries({ queryKey: stockKeys.all }),
-        invalidateCash(),
-      ])
-    },
+    onSuccess: saved,
   })
 }
 

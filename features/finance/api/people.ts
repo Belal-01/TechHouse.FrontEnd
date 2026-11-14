@@ -32,7 +32,7 @@ export function useAdvanceEntries(id: string) {
 
 export type PersonInput = { name: string; phone: string | null; active: boolean; version?: number }
 
-function useInvalidatePeople() {
+export function useInvalidatePeople() {
   const queryClient = useQueryClient()
   return () => queryClient.invalidateQueries({ queryKey: peopleKeys.all })
 }

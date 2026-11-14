@@ -16,6 +16,8 @@ import { ApiError, toUserMessage } from "@/lib/api/errors"
 import { formatDateTime } from "@/lib/format"
 import { cn } from "@/lib/utils"
 import { useCashAccounts } from "../../api/cash"
+import { PARTNER_KIND_LABELS } from "../../lib/partner-labels"
+import { usePartners } from "../../api/partners"
 import { useAdvanceEntries, usePerson } from "../../api/people"
 import type { AdvanceEntry } from "../../types"
 import { AdvanceCashDialog } from "./advance-cash-dialog"
@@ -56,6 +58,7 @@ export function PersonDetailView({ personId }: { personId: string }) {
   const person = usePerson(personId)
   const entries = useAdvanceEntries(personId)
   const accounts = useCashAccounts()
+  const partners = usePartners(Boolean(person.data?.partnerKind))
   const [dialog, setDialog] = useState<Dialog>({ kind: null, session: 0 })
   const open = (kind: NonNullable<Dialog["kind"]>) => setDialog((s) => ({ kind, session: s.session + 1 }))
   const onOpenChange = (isOpen: boolean) => setDialog((s) => ({ ...s, kind: isOpen ? s.kind : null }))
@@ -69,6 +72,7 @@ export function PersonDetailView({ personId }: { personId: string }) {
   }
 
   const p = person.data
+  const partner = partners.data?.find((item) => item.id === p.partnerId)
   const owesAnything = p.owedUsd > 0 || p.owedSyp > 0
   const defaultAccountId = accounts.data?.find((a) => a.isDefault)?.id ?? ""
 
@@ -96,6 +100,7 @@ export function PersonDetailView({ personId }: { personId: string }) {
         }
       />
 
+      {p.partnerKind ? <p className="small text-muted-foreground">{PARTNER_KIND_LABELS[p.partnerKind]}</p> : null}
       <div className="grid gap-4 sm:grid-cols-2">
         {(["USD", "SYP"] as const).map((currency) => {
           const value = currency === "USD" ? p.owedUsd : p.owedSyp
@@ -109,6 +114,18 @@ export function PersonDetailView({ personId }: { personId: string }) {
           )
         })}
       </div>
+
+      {partner ? (
+        <Card>
+          <CardContent className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold">تمويل الفواتير</p>
+              <p className="small text-muted-foreground">{partner.invoiceCount} فاتورة</p>
+            </div>
+            <MoneyAmount value={partner.fundedUsd} currency="USD" className="font-semibold" />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <section className="flex flex-col gap-3" aria-labelledby="advance-history-title">
         <h2 id="advance-history-title" className="h3">

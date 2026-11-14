@@ -66,6 +66,7 @@ const MESSAGES: Record<string, string> = {
   EXPENSE_CATEGORY_IN_USE: "لهذه الفئة مصاريف، فلا يمكن حذفها. يمكنك تعطيلها بدلاً من ذلك.",
   EXPENSE_CATEGORY_SYSTEM: "يستخدم النظام هذه الفئة، فلا يمكن حذفها أو تعطيلها.",
   PERSON_NOT_FOUND: "الشخص غير موجود.",
+  PERSON_MANAGED_AS_PARTNER: "عدّل بيانات هذا الشخص من صفحة الشركاء والمستثمرين.",
   PERSON_INACTIVE: "هذا الشخص غير فعّال.",
   PERSON_NAME_EXISTS: "يوجد شخص بهذا الاسم.",
   ADVANCE_EXCEEDS_BALANCE: "المبلغ أكبر مما عليه من سلفة بهذه العملة.",
@@ -74,6 +75,18 @@ const MESSAGES: Record<string, string> = {
   INVOICE_STOCK_USED: "لا يمكن إلغاء الفاتورة: جزء من بضاعتها بيع أو في طلب قيد التوصيل. ألغِ أو أرجِع تلك الطلبات أولاً.",
   INVOICE_NOT_FOUND: "الفاتورة غير موجودة.",
   ATTACHMENT_NOT_FOUND: "لا يوجد ملف مرفق بهذه الفاتورة.",
+  INVOICE_ALREADY_RECEIVED: "سُجِّل وصول هذه الفاتورة مسبقاً.",
+  INVOICE_FULLY_SOLD: "بيعت كل بضاعة هذه الفاتورة، فلا توجد قطع تُضاف إليها التكلفة. سجّلها كمصروف بدلاً من ذلك.",
+  INVOICE_COST_LOCKED: "لا يمكن حذف تكلفة بعد وصول البضاعة، لأنها دخلت في تكلفة القطع.",
+  INVOICE_COST_NOT_FOUND: "التكلفة غير موجودة.",
+  INVOICE_PAYMENT_NOT_FOUND: "الدفعة غير موجودة.",
+  PAYMENTS_TOTAL_MISMATCH: "مجموع الدفعات يجب أن يساوي قيمة البضاعة.",
+  FUNDING_TOTAL_MISMATCH: "مجموع الأجزاء يجب أن يساوي مبلغ الدفعة.",
+  PAYMENT_ALREADY_ASSIGNED: "حُدِّد صاحب هذه الدفعة مسبقاً.",
+  PARTNER_NOT_FOUND: "الشخص غير موجود.",
+  PARTNER_INACTIVE: "هذا الشخص غير فعّال.",
+  PARTNER_NAME_EXISTS: "يوجد شريك أو مستثمر بهذا الاسم.",
+  PARTNER_KIND_MISMATCH: "اختر صاحب شركة لدفعة صاحب الشركة، ومستثمراً لدفعة المستثمر.",
 }
 
 const FALLBACK = "حدث خطأ غير متوقع. حاول مرة أخرى."

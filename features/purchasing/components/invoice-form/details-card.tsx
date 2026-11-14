@@ -6,26 +6,23 @@ import { FormField } from "@/components/ui/form-field"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { CashAccountSelect, useCashAccounts } from "@/features/finance"
 import { fieldA11y } from "@/lib/field-a11y"
-import { PAID_FROM_LABELS } from "../../lib/invoice-form"
+import { STATUS_LABELS } from "../../lib/invoice-form"
 import type { InvoiceFormValues } from "../../schemas/invoice.schema"
+import type { InvoiceStatus } from "../../types"
 import { SupplierSelect } from "../supplier-select"
 
-const PAID_FROM_ITEMS = (Object.keys(PAID_FROM_LABELS) as (keyof typeof PAID_FROM_LABELS)[]).map((value) => ({
+const STATUS_ITEMS = (Object.keys(STATUS_LABELS) as InvoiceStatus[]).map((value) => ({
   value,
-  label: PAID_FROM_LABELS[value],
+  label: value === "IN_TRANSIT" ? "في الطريق (لم تصل بعد)" : "وصلت (جاهزة للبيع)",
 }))
 
 export function DetailsCard() {
   const {
     control,
     register,
-    watch,
     formState: { errors },
   } = useFormContext<InvoiceFormValues>()
-  const paidFrom = watch("paidFrom")
-  const defaultBox = useCashAccounts().data?.find((a) => a.isDefault)?.name
 
   return (
     <Card>
@@ -55,44 +52,29 @@ export function DetailsCard() {
         </FormField>
         <Controller
           control={control}
-          name="paidFrom"
+          name="status"
           render={({ field }) => (
             <FormField
-              id="invoice-paid-from"
-              label="مصدر الدفع"
+              id="invoice-status"
+              label="حالة البضاعة"
               description={
-                paidFrom === "INCOME"
-                  ? "يُخصم المبلغ من رصيد الدولار في الصندوق المختار."
-                  : "مال جديد تضعه في المتجر لهذه الفاتورة: يدخل ويخرج، فلا يتغير رصيد المحفظة."
+                field.value === "IN_TRANSIT"
+                  ? "تظهر كبضاعة في الطريق ولا تُباع حتى تؤكد وصولها وتضيف الشحن البحري والجمارك."
+                  : "تدخل المخزون فوراً وتصير جاهزة للبيع، مثل البضاعة المشتراة محلياً أو المخزون الافتتاحي."
               }
             >
-              <Select items={PAID_FROM_ITEMS} value={field.value} onValueChange={(value) => value && field.onChange(value)}>
-                <SelectTrigger id="invoice-paid-from" className="w-full">
+              <Select items={STATUS_ITEMS} value={field.value} onValueChange={(value) => value && field.onChange(value)}>
+                <SelectTrigger id="invoice-status" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {PAID_FROM_ITEMS.map((item) => (
+                  {STATUS_ITEMS.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
                       {item.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </FormField>
-          )}
-        />
-        <Controller
-          control={control}
-          name="accountId"
-          render={({ field }) => (
-            <FormField id="invoice-account" label="الدفع من صندوق" error={errors.accountId?.message}>
-              <CashAccountSelect
-                id="invoice-account"
-                emptyLabel={defaultBox ? `${defaultBox} (الافتراضي)` : "الصندوق الافتراضي"}
-                value={field.value}
-                onValueChange={field.onChange}
-                {...fieldA11y("invoice-account", errors.accountId)}
-              />
             </FormField>
           )}
         />

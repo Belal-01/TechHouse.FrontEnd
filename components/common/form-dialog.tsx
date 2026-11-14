@@ -44,7 +44,7 @@ export function FormDialog({
   return (
     // Keep the dialog open while a request is in flight.
     <Dialog open={open} onOpenChange={(next) => (isPending ? undefined : onOpenChange(next))}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-md">
         <form onSubmit={onSubmit} noValidate aria-busy={isPending} className="grid gap-6">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>

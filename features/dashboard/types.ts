@@ -6,6 +6,7 @@ export type WealthTotals = {
   cashUsd: number
   inventoryUsd: number
   inTransitUsd: number
+  incomingUsd: number
   advancesUsd: number
   totalUsd: number
   /** No exchange rate yet: SYP amounts could not be counted. */
@@ -36,6 +37,7 @@ export type Wealth = {
   totals: WealthTotals
   accounts: { id: string; name: string; usd: number; syp: number; valueUsd: number }[]
   stock: { productId: string; name: string; available: number; valueUsd: number; inTransit: number; inTransitValueUsd: number }[]
+  incoming: { invoiceId: string; invoiceNumber: string; invoiceDate: string; supplier?: string | null; units: number; valueUsd: number }[]
   advances: { personId: string; name: string; usd: number; syp: number; valueUsd: number }[]
   rate: Rate
 }

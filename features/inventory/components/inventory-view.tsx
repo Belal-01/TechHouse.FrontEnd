@@ -64,7 +64,8 @@ const columns: DataTableColumn<StockItem>[] = [
     className: "hidden sm:table-cell",
     cell: (s) => (s.inTransit > 0 ? formatQuantity(s.inTransit) : <span className="text-muted-foreground">—</span>),
   },
-  { id: "value", header: "القيمة", align: "end", cell: (s) => usd(s.valueUsd + s.inTransitValueUsd) },
+  { id: "incoming", header: "مشتريات في الطريق", cell: (s) => formatQuantity(s.incoming) },
+  { id: "value", header: "القيمة", className: "hidden sm:table-cell", align: "end", cell: (s) => usd(s.valueUsd + s.inTransitValueUsd) },
 ]
 
 export function InventoryView() {
@@ -77,6 +78,7 @@ export function InventoryView() {
   )
   const warehouse = all.reduce((sum, s) => sum + s.valueUsd, 0)
   const transit = all.reduce((sum, s) => sum + s.inTransitValueUsd, 0)
+  const incoming = all.reduce((sum, s) => sum + s.incoming, 0)
   const units = all.reduce((sum, s) => sum + s.available, 0)
   const lowCount = all.filter((s) => s.low).length
   const hasFilters = state.q !== "" || state.filter !== "all"
@@ -95,7 +97,7 @@ export function InventoryView() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile label="قيمة المستودع" value={usd(warehouse)} hint={<>{formatQuantity(units)} قطعة</>} />
           <StatTile label="مع الزبائن" value={usd(transit)} hint="طلبات قيد التوصيل" href="/sales/orders?status=PENDING" />
-          <StatTile label="المجموع" value={usd(warehouse + transit)} tone="accent" />
+          <StatTile label="مشتريات في الطريق" value={formatQuantity(incoming)} hint="قطع بانتظار الاستلام" href="/purchasing/invoices?status=IN_TRANSIT" />
           <StatTile
             label="قارب على النفاد أو نفد"
             value={formatQuantity(lowCount)}

@@ -128,7 +128,7 @@ export type ExpenseSummary = {
 // ---- Advances ---------------------------------------------------------------------------
 
 /** owedUsd / owedSyp: what the person still holds of the shop's money. */
-export type Person = { id: string; name: string; phone?: string | null; active: boolean; owedUsd: number; owedSyp: number; version: number }
+export type Person = { partnerKind?: PartnerKind; partnerId?: string; id: string; name: string; phone?: string | null; active: boolean; owedUsd: number; owedSyp: number; version: number }
 
 export type AdvanceEntry = {
   id: string
@@ -140,4 +140,33 @@ export type AdvanceEntry = {
   expenseId?: string | null
   note?: string | null
   createdAt: string
+}
+
+/** OWNER: one of the company owners. INVESTOR: funds specific invoices for a share of their profit. */
+export type PartnerKind = "OWNER" | "INVESTOR"
+
+export type Partner = {
+  id: string
+  name: string
+  kind: PartnerKind
+  advanceProfileId: string
+  /** Owner: share of the company. Investor: default share of the profit on what they fund. */
+  profitPercent: number
+  phone?: string | null
+  notes?: string | null
+  active: boolean
+  /** What they paid towards invoices that weren't voided. */
+  fundedUsd: number
+  invoiceCount: number
+  version: number
+}
+
+export type PartnerInput = {
+  name: string
+  kind: PartnerKind
+  profitPercent: number
+  phone: string | null
+  notes: string | null
+  active: boolean
+  version?: number
 }

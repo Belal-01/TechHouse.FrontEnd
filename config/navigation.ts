@@ -48,6 +48,7 @@ export const dashboardNavigation: NavGroup[] = [
           { title: "الصناديق", href: "/finance/wallets" },
           { title: "المصاريف", href: "/finance/expenses" },
           { title: "السلف", href: "/finance/advances" },
+          { title: "الشركاء والمستثمرون", href: "/finance/partners" },
           { title: "أسعار الصرف", href: "/finance/exchange-rates" },
           { title: "التقارير", href: "/finance/reports", disabled: true },
         ],

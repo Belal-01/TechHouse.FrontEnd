@@ -45,7 +45,7 @@ export function LinesCard({ costs }: { costs: (LineCost | null)[] }) {
     <Card>
       <CardHeader>
         <CardTitle>البنود</CardTitle>
-        <CardDescription>سعر القطعة كما في فاتورة المورد، قبل الشحن. يُوزَّع الشحن على البنود حسب قيمتها.</CardDescription>
+        <CardDescription>سعر القطعة كما في فاتورة المورد، قبل الشحن. التكلفة الواصلة تقديرية حتى تُضاف كل التكاليف.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {errors.items?.root?.message || errors.items?.message ? (

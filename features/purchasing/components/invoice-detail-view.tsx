@@ -1,13 +1,12 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 import { FileX } from "lucide-react"
 import { ButtonLink } from "@/components/common/button-link"
 import { DataTable, type DataTableColumn } from "@/components/common/data-table"
 import { EmptyState } from "@/components/common/empty-state"
 import { FormPageHeader } from "@/components/common/form-page-header"
 import { Alert } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ApiError, toUserMessage } from "@/lib/api/errors"
@@ -16,7 +15,9 @@ import { useInvoice } from "../api/invoices"
 import type { InvoiceItem } from "../types"
 import { InvoiceAttachmentCard } from "./invoice-attachment-card"
 import { InvoiceDetailSkeleton } from "./invoice-detail-skeleton"
-import { PaidFromBadge } from "./paid-from-badge"
+import { InvoiceCostDialog } from "./invoice-cost-dialog"
+import { InvoiceFundingSection } from "./invoice-funding-section"
+import { InvoiceStatusBadge } from "./invoice-status-badge"
 import { VoidInvoiceButton } from "./void-invoice-button"
 
 const money = (value: number) => <span dir="ltr">{formatMoney(value)}</span>
@@ -43,7 +44,7 @@ const columns: DataTableColumn<InvoiceItem>[] = [
     className: "hidden sm:table-cell",
     cell: (item) => <span dir="ltr">{formatUnitCost(item.unitPriceUsd)}</span>,
   },
-  { id: "extra", header: "حصة الشحن", className: "hidden md:table-cell", cell: (item) => money(item.extraCostUsd) },
+  { id: "extra", header: "حصة التكاليف", className: "hidden md:table-cell", cell: (item) => money(item.extraCostUsd) },
   {
     id: "landed",
     header: "التكلفة الواصلة",
@@ -70,6 +71,7 @@ function Row({ label, children, strong = false }: { label: string; children: Rea
 
 export function InvoiceDetailView({ invoiceId }: { invoiceId: string }) {
   const invoice = useInvoice(invoiceId)
+  const [receiving, setReceiving] = useState(false)
 
   if (invoice.isPending) return <InvoiceDetailSkeleton />
 
@@ -98,22 +100,28 @@ export function InvoiceDetailView({ invoiceId }: { invoiceId: string }) {
   }
 
   const data = invoice.data
+  const inTransit = data.status === "IN_TRANSIT"
   return (
     <div className="flex flex-col gap-6">
       <FormPageHeader
         title={
           <span className="inline-flex items-center gap-3">
             <span dir="ltr">{data.invoiceNumber}</span>
-            {data.voidedAt ? <Badge variant="destructive">ملغاة</Badge> : null}
+            <InvoiceStatusBadge status={data.status} voided={Boolean(data.voidedAt)} />
           </span>
         }
         backHref="/purchasing/invoices"
         backLabel="فواتير الشراء"
-        actions={data.voidable ? <VoidInvoiceButton invoiceId={data.id} invoiceNumber={data.invoiceNumber} /> : null}
+        actions={
+          <>
+            {inTransit && !data.voidedAt ? <Button onClick={() => setReceiving(true)}>استلام الفاتورة</Button> : null}
+            {data.voidable ? <VoidInvoiceButton invoiceId={data.id} invoiceNumber={data.invoiceNumber} /> : null}
+          </>
+        }
       />
       {data.voidedAt ? (
         <Alert>
-          أُلغيت هذه الفاتورة في {formatDateTime(data.voidedAt)}: خرجت بضاعتها من المخزون وعاد مبلغها إلى الصندوق.
+          أُلغيت هذه الفاتورة في {formatDateTime(data.voidedAt)}: عُكست الدفعات المسدّدة من صناديق المتجر.
           {data.voidNote ? ` السبب: ${data.voidNote}` : ""}
         </Alert>
       ) : !data.voidable ? (
@@ -132,13 +140,9 @@ export function InvoiceDetailView({ invoiceId }: { invoiceId: string }) {
             <dl className="flex flex-col gap-2 small">
               <Row label="المورد">{data.supplier?.name ?? "بدون مورد"}</Row>
               <Row label="التاريخ">{formatDate(data.invoiceDate)}</Row>
-              <Row label="مصدر الدفع">
-                <PaidFromBadge paidFrom={data.paidFrom} />
-              </Row>
-              {data.account ? <Row label="الصندوق">{data.account.name}</Row> : null}
+              {data.receivedAt ? <Row label="الاستلام">{formatDateTime(data.receivedAt)}</Row> : null}
               <Row label="قيمة البضاعة">{money(data.itemsTotalUsd)}</Row>
-              <Row label="الشحن">{money(data.shippingCostUsd)}</Row>
-              {data.customsCostUsd > 0 ? <Row label="جمارك وتخليص">{money(data.customsCostUsd)}</Row> : null}
+              <Row label="التكاليف">{money(data.costsTotalUsd)}</Row>
               <Row label="الإجمالي" strong>
                 {money(data.totalUsd)}
               </Row>
@@ -149,9 +153,12 @@ export function InvoiceDetailView({ invoiceId }: { invoiceId: string }) {
         <InvoiceAttachmentCard invoiceId={data.id} hasAttachment={data.hasAttachment} />
       </div>
 
+      <InvoiceFundingSection invoice={data} />
+      {receiving ? <InvoiceCostDialog invoiceId={data.id} receive onClose={() => setReceiving(false)} /> : null}
+
       <section className="flex min-w-0 flex-col gap-3" aria-labelledby="invoice-items-title">
         <h2 id="invoice-items-title" className="h3">
-          البنود
+          {inTransit ? "البنود والتكلفة التقديرية" : "البنود"}
         </h2>
         <DataTable caption="بنود الفاتورة" columns={columns} rows={data.items} getRowId={(item) => item.id} />
       </section>

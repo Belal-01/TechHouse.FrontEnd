@@ -11,6 +11,7 @@ export type StockItem = {
   /** Units out with customers on pending orders. */
   inTransit: number
   inTransitValueUsd: number
+  incoming: number
   /** Bought at least once. */
   stocked: boolean
   /** Stocked, for sale, and below the low-stock threshold. */

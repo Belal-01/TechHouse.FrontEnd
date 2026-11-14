@@ -24,6 +24,20 @@ const accountColumns: DataTableColumn<Wealth["accounts"][number]>[] = [
   { id: "value", header: "القيمة بالدولار", align: "end", cell: (a) => <span className="font-semibold">{usd(a.valueUsd)}</span> },
 ]
 
+const incomingColumns: DataTableColumn<Wealth["incoming"][number]>[] = [
+  {
+    id: "invoice", header: "الفاتورة", className: "whitespace-normal!",
+    cell: (row) => (
+      <Link href={`/purchasing/invoices/${row.invoiceId}`} className="font-semibold text-foreground hover:underline">
+        <bdi>{row.invoiceNumber}</bdi>
+      </Link>
+    ),
+  },
+  { id: "supplier", header: "المورد", className: "hidden sm:table-cell", cell: (row) => row.supplier ?? "—" },
+  { id: "units", header: "القطع", cell: (row) => formatQuantity(row.units) },
+  { id: "value", header: "التكلفة", align: "end", cell: (row) => usd(row.valueUsd) },
+]
+
 const stockColumns: DataTableColumn<Wealth["stock"][number]>[] = [
   {
     id: "name",
@@ -101,7 +115,7 @@ export function WealthView() {
     )
   }
 
-  const { totals, accounts, stock, advances, rate } = wealth.data
+  const { totals, accounts, stock, incoming, advances, rate } = wealth.data
   const inventory = totals.inventoryUsd + totals.inTransitUsd
   return (
     <div className="flex flex-col gap-6">
@@ -123,11 +137,13 @@ export function WealthView() {
         <StatTile label="المجموع" value={usd(totals.totalUsd)} tone="accent" />
         <StatTile label="الكاش" value={usd(totals.cashUsd)} hint={share(totals.cashUsd, totals.totalUsd)} />
         <StatTile label="المخزون" value={usd(inventory)} hint={<>منه {usd(totals.inTransitUsd)} مع الزبائن</>} />
+        <StatTile label="مشتريات في الطريق" value={usd(totals.incomingUsd)} hint={share(totals.incomingUsd, totals.totalUsd)} />
         <StatTile label="سلف عند الأشخاص" value={usd(totals.advancesUsd)} hint={share(totals.advancesUsd, totals.totalUsd)} />
       </div>
 
       <Section title="الصناديق" total={totals.cashUsd} of={totals.totalUsd} columns={accountColumns} rows={accounts} getRowId={(a) => a.id} empty="لا صناديق." />
       <Section title="المخزون" total={inventory} of={totals.totalUsd} columns={stockColumns} rows={stock} getRowId={(s) => s.productId} empty="لا بضاعة في المخزون." />
+      <Section title="مشتريات في الطريق" total={totals.incomingUsd} of={totals.totalUsd} columns={incomingColumns} rows={incoming} getRowId={(row) => row.invoiceId} empty="لا فواتير بانتظار الاستلام." />
       <Section title="السلف" total={totals.advancesUsd} of={totals.totalUsd} columns={advanceColumns} rows={advances} getRowId={(a) => a.personId} empty="لا سلف مفتوحة." />
     </div>
   )

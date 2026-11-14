@@ -124,6 +124,7 @@ export function ProductStockView({ productId }: { productId: string }) {
           tone={summary.low ? "negative" : "default"}
           hint={summary.low ? `أقل من ${formatQuantity(lowStockThreshold)}: وقت الشراء` : undefined}
         />
+        <StatTile label="مشتريات في الطريق" value={formatQuantity(summary.incoming)} hint="قطع بانتظار الاستلام" />
         <StatTile label="مع الزبائن" value={formatQuantity(summary.inTransit)} hint="في طلبات قيد التوصيل" />
         <StatTile label="قيمة المستودع" value={<span dir="ltr">{formatMoney(summary.valueUsd)}</span>} />
         <StatTile

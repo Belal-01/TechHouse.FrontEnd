@@ -10,11 +10,13 @@ import { PageHeader } from "@/components/common/page-header"
 import { PaginationBar } from "@/components/common/pagination-bar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toUserMessage } from "@/lib/api/errors"
 import { formatDate, formatMoney, formatQuantity } from "@/lib/format"
 import { useInvoices } from "../api/invoices"
-import type { InvoiceSummary } from "../types"
-import { PaidFromBadge } from "./paid-from-badge"
+import { STATUS_LABELS } from "../lib/invoice-form"
+import type { InvoiceStatus, InvoiceSummary } from "../types"
+import { InvoiceStatusBadge } from "./invoice-status-badge"
 import { NO_SUPPLIER, SupplierSelect } from "./supplier-select"
 
 const PAGE_SIZE = 20
@@ -22,8 +24,14 @@ const PAGE_SIZE = 20
 // Filter and page live in the URL, so reload, back/forward and shared links keep them.
 const filterParsers = {
   supplier: parseAsString.withDefault(NO_SUPPLIER),
+  status: parseAsString.withDefault(""),
   page: parseAsInteger.withDefault(1),
 }
+
+const STATUS_FILTER_ITEMS = [
+  { value: "", label: "كل الحالات" },
+  ...(Object.keys(STATUS_LABELS) as InvoiceStatus[]).map((value) => ({ value, label: STATUS_LABELS[value] })),
+]
 
 const columns: DataTableColumn<InvoiceSummary>[] = [
   {
@@ -38,9 +46,10 @@ const columns: DataTableColumn<InvoiceSummary>[] = [
         >
           {invoice.invoiceNumber}
         </Link>
-        <span className="flex items-center gap-2 text-xs text-muted-foreground">
+        <span className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {formatDate(invoice.invoiceDate)}
-          {invoice.voided ? <Badge variant="destructive">ملغاة</Badge> : null}
+          <InvoiceStatusBadge status={invoice.status} voided={invoice.voided} />
+          {invoice.unassigned ? <Badge variant="outline">ممول غير محدد</Badge> : null}
         </span>
       </div>
     ),
@@ -56,12 +65,6 @@ const columns: DataTableColumn<InvoiceSummary>[] = [
     header: "البنود",
     className: "hidden md:table-cell",
     cell: (invoice) => formatQuantity(invoice.itemCount),
-  },
-  {
-    id: "paidFrom",
-    header: "الدفع",
-    className: "hidden lg:table-cell",
-    cell: (invoice) => <PaidFromBadge paidFrom={invoice.paidFrom} />,
   },
   {
     id: "total",
@@ -84,11 +87,12 @@ export function InvoicesView() {
   const [filters, setFilters] = useQueryStates(filterParsers)
   const invoices = useInvoices({
     supplierId: filters.supplier || null,
+    status: (filters.status || null) as InvoiceStatus | null,
     page: Math.max(filters.page - 1, 0),
     size: PAGE_SIZE,
   })
   const page = invoices.data
-  const hasFilters = filters.supplier !== NO_SUPPLIER
+  const hasFilters = filters.supplier !== NO_SUPPLIER || filters.status !== ""
 
   const addButton = (variant: "default" | "outline") => (
     <ButtonLink variant={variant} href="/purchasing/invoices/new">
@@ -101,17 +105,31 @@ export function InvoicesView() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title="فواتير الشراء"
-        description="البضاعة التي اشتريتها، بتكلفتها الواصلة بعد الشحن."
+        description="البضاعة التي اشتريتها: في الطريق أو وصلت، بتكلفتها الواصلة بعد الشحن والجمارك."
         actions={addButton("default")}
       />
 
-      <SupplierSelect
-        aria-label="المورد"
-        className="w-full md:w-64"
-        emptyLabel="كل الموردين"
-        value={filters.supplier}
-        onValueChange={(supplier) => setFilters({ supplier, page: 1 })}
-      />
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <SupplierSelect
+          aria-label="المورد"
+          className="w-full sm:w-64"
+          emptyLabel="كل الموردين"
+          value={filters.supplier}
+          onValueChange={(supplier) => setFilters({ supplier, page: 1 })}
+        />
+        <Select items={STATUS_FILTER_ITEMS} value={filters.status} onValueChange={(status) => setFilters({ status: status ?? "", page: 1 })}>
+          <SelectTrigger aria-label="الحالة" className="w-full sm:w-48">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_FILTER_ITEMS.map((item) => (
+              <SelectItem key={item.value || "all"} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <DataTable
         caption="قائمة فواتير الشراء"
@@ -127,9 +145,9 @@ export function InvoicesView() {
           hasFilters ? (
             <EmptyState
               icon={SearchX}
-              title="لا توجد فواتير لهذا المورد"
+              title="لا توجد فواتير بهذه الفلاتر"
               action={
-                <Button variant="outline" onClick={() => setFilters({ supplier: NO_SUPPLIER, page: 1 })}>
+                <Button variant="outline" onClick={() => setFilters({ supplier: NO_SUPPLIER, status: "", page: 1 })}>
                   عرض كل الفواتير
                 </Button>
               }

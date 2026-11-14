@@ -74,7 +74,7 @@ export function LineRow({ index, cost, onChangeProduct, onRemove }: LineRowProps
             <dd dir="ltr">{cost ? formatMoney(cost.lineValue) : "—"}</dd>
           </div>
           <div className="flex gap-1">
-            <dt className="text-muted-foreground">حصة الشحن:</dt>
+            <dt className="text-muted-foreground">حصة التكاليف:</dt>
             <dd dir="ltr">{cost ? formatMoney(cost.extra) : "—"}</dd>
           </div>
           <div className="flex gap-1">

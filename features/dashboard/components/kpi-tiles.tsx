@@ -40,7 +40,7 @@ export function KpiTiles({ data }: { data: Dashboard }) {
           tone="accent"
           hint={
             <>
-              كاش {usd(wealth.cashUsd)} · مخزون {usd(wealth.inventoryUsd + wealth.inTransitUsd)} · سلف {usd(wealth.advancesUsd)}
+              كاش {usd(wealth.cashUsd)} · مخزون {usd(wealth.inventoryUsd + wealth.inTransitUsd)} · مشتريات في الطريق {usd(wealth.incomingUsd)} · سلف {usd(wealth.advancesUsd)}
               {wealth.sypExcluded ? " · الليرة غير محسوبة: لا يوجد سعر صرف" : null}
             </>
           }

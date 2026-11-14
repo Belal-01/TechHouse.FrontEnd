@@ -63,9 +63,12 @@ export function ProductForm({ product, mediaSlot }: ProductFormProps) {
           toast.success("تم حفظ المنتج")
         } else {
           const saved = await createProduct.mutateAsync(input)
-          form.reset(toFormValues(saved))
-          toast.success("تم إنشاء المنتج. يمكنك الآن إضافة الصور.")
-          router.replace(`/catalog/products/${saved.id}`)
+          // Clear the form (also drops the unsaved-changes guard) and go back to the list, ready for the next product.
+          form.reset(emptyProductForm)
+          toast.success(`تم إنشاء المنتج "${saved.name}"`, {
+            action: { label: "إضافة الصور", onClick: () => router.push(`/catalog/products/${saved.id}`) },
+          })
+          router.push("/catalog/products")
         }
       } catch (error) {
         if (!applyApiError(error, form.setError, { mapField: mapProductField })) setFormError(toUserMessage(error))

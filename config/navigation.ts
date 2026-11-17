@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   Package,
+  PlugZap,
   ReceiptText,
   ShoppingCart,
   Truck,
@@ -27,6 +28,7 @@ export const dashboardNavigation: NavGroup[] = [
         ],
       },
       { title: "الطلبات", href: "/sales/orders", icon: ShoppingCart },
+      { title: "تركيب نقاط الشحن", href: "/installations", icon: PlugZap },
       { title: "شركات التوصيل", href: "/sales/delivery-companies", icon: Truck },
     ],
   },

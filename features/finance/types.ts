@@ -55,6 +55,9 @@ export type MovementType =
   | "ADVANCE_OUT"
   | "ADJUSTMENT"
   | "CAPITAL_PAYOUT"
+  | "INSTALLATION_MATERIAL_PURCHASE"
+  | "INSTALLATION_RECEIPT"
+  | "INSTALLATION_TECHNICIAN"
   | "PROFIT_PAYOUT"
 
 export type Movement = {
@@ -66,7 +69,7 @@ export type Movement = {
   amount: number
   exchangeRate?: number | null
   /** What caused it, with a readable label (order / invoice number, expense, person). */
-  reference?: { type: "ORDER" | "PURCHASE_INVOICE" | "EXPENSE" | "PERSON"; id: string; label?: string | null } | null
+  reference?: { type: "ORDER" | "PURCHASE_INVOICE" | "EXPENSE" | "PERSON" | "INVESTOR" | "INSTALLATION" | "INSTALLATION_MATERIAL"; id: string; label?: string | null } | null
   group?: string | null
   note?: string | null
   createdAt: string

@@ -14,6 +14,9 @@ export const MOVEMENT_LABELS: Record<MovementType, string> = {
   TRANSFER_OUT: "تحويل صادر",
   ADVANCE_OUT: "سلفة",
   CAPITAL_PAYOUT: "سحب رأس مال مستثمر",
+  INSTALLATION_MATERIAL_PURCHASE: "شراء مواد تركيب",
+  INSTALLATION_RECEIPT: "قبض تركيب",
+  INSTALLATION_TECHNICIAN: "أجرة فني تركيب",
   PROFIT_PAYOUT: "صرف أرباح مستثمر",
   ADJUSTMENT: "تسوية",
 }
@@ -25,6 +28,9 @@ export function referenceHref(type: string, id: string): string | null {
       return `/sales/orders/${id}`
     case "PURCHASE_INVOICE":
       return `/purchasing/invoices/${id}`
+    case "INSTALLATION":
+    case "INSTALLATION_MATERIAL":
+      return "/installations"
     case "PERSON":
       return `/finance/advances/${id}`
     default:

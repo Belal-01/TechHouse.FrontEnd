@@ -7,6 +7,7 @@ export { ExpenseCategoriesView } from "./components/expenses/categories-view"
 export { PeopleView } from "./components/advances/people-view"
 export { PersonDetailView } from "./components/advances/person-detail-view"
 export { PartnersView } from "./components/partners/partners-view"
+export { InvestorSettlementView } from "./components/partners/investor-settlement-view"
 // Used by other features: valuing SYP amounts (sales use the sell rate) and choosing the box money moves through.
 export { useCurrentRate } from "./api/exchange-rates"
 export { CashAccountSelect } from "./components/cash-account-select"

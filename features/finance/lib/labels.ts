@@ -13,6 +13,8 @@ export const MOVEMENT_LABELS: Record<MovementType, string> = {
   EXCHANGE_OUT: "تصريف (صادر)",
   TRANSFER_OUT: "تحويل صادر",
   ADVANCE_OUT: "سلفة",
+  CAPITAL_PAYOUT: "سحب رأس مال مستثمر",
+  PROFIT_PAYOUT: "صرف أرباح مستثمر",
   ADJUSTMENT: "تسوية",
 }
 

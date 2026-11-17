@@ -54,6 +54,8 @@ export type MovementType =
   | "TRANSFER_OUT"
   | "ADVANCE_OUT"
   | "ADJUSTMENT"
+  | "CAPITAL_PAYOUT"
+  | "PROFIT_PAYOUT"
 
 export type Movement = {
   id: string

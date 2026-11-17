@@ -27,7 +27,7 @@ export function PartnersView() {
       header: "الاسم",
       cell: (p) => (
         <div className="flex flex-col items-start gap-1">
-          <Link href={`/finance/advances/${p.advanceProfileId}`} className="font-semibold text-foreground hover:text-blue hover:underline">{p.name}</Link>
+          <Link href={p.kind === "INVESTOR" ? `/finance/partners/${p.id}` : `/finance/advances/${p.advanceProfileId}`} className="font-semibold text-foreground hover:text-blue hover:underline">{p.name}</Link>
           {p.active ? null : <Badge variant="outline">غير فعّال</Badge>}
         </div>
       ),

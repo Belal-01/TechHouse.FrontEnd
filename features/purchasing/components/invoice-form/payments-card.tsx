@@ -18,6 +18,7 @@ export function PaymentsCard({ goodsTotal }: { goodsTotal: number }) {
   const {
     control,
     register,
+    setValue,
     formState: { errors },
   } = useFormContext<InvoiceFormValues>()
   const { fields, append, remove } = useFieldArray({ control, name: "payments" })
@@ -46,7 +47,10 @@ export function PaymentsCard({ goodsTotal }: { goodsTotal: number }) {
                   name={`payments.${index}.payer`}
                   render={({ field: payer }) => (
                     <FormField id={id("payer")} label="الدافع" error={lineErrors?.payer?.message}>
-                      <PayerSelect id={id("payer")} value={payer.value} onValueChange={payer.onChange} {...fieldA11y(id("payer"), lineErrors?.payer)} />
+                      <PayerSelect id={id("payer")} value={payer.value} onValueChange={(value) => {
+                        payer.onChange(value)
+                        setValue(`payments.${index}.useInvestorBalance`, false)
+                      }} {...fieldA11y(id("payer"), lineErrors?.payer)} />
                     </FormField>
                   )}
                 />
@@ -67,6 +71,13 @@ export function PaymentsCard({ goodsTotal }: { goodsTotal: number }) {
                     <Trash2 aria-hidden />
                     حذف
                   </Button>
+                ) : null}
+                {payments[index]?.payer.startsWith("INVESTOR:") ? (
+                  <label className="flex items-center gap-2 small sm:col-span-full">
+                    <input type="checkbox" {...register(`payments.${index}.useInvestorBalance`)} />
+                    من رأس مال المستثمر المسترد (الدفع من الصندوق الافتراضي)
+                    {lineErrors?.useInvestorBalance?.message ? <span className="text-red">{lineErrors.useInvestorBalance.message}</span> : null}
+                  </label>
                 ) : null}
               </li>
             )

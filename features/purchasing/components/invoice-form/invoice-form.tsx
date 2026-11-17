@@ -30,6 +30,8 @@ import { SummaryCard } from "./summary-card"
 
 /** Server field paths → form paths. items[0].productId arrives as items.0.productId; a payer's box or person is the payer field. */
 function mapInvoiceField(path: string): string | null {
+  const amount = /^(payments\.\d+)\.amountUsd$/.exec(path)
+  if (amount) return `${amount[1]}.useInvestorBalance`
   if (/^items\.\d+\.(productId|quantity|unitPriceUsd)$/.test(path)) return path
   if (/^costs\.\d+\.(amount|description)$/.test(path)) return path
   const payer = /^((?:costs|payments)\.\d+)\.(accountId|partnerId)$/.exec(path)

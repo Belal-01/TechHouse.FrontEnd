@@ -126,7 +126,7 @@ export type InvoiceInput = {
   notes: string | null
   items: { productId: string; quantity: number; unitPriceUsd: number }[]
   costs: CostInput[]
-  payments: (PayerInput & { amountUsd: number })[]
+  payments: (PayerInput & { amountUsd: number; useInvestorBalance?: boolean })[]
 }
 
 export type AssignInput = { parts: { source: "OWNER" | "INVESTOR"; partnerId: string; amount: number }[] }

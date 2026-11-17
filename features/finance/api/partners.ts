@@ -10,6 +10,7 @@ const BASE = "/admin/finance/partners"
 export const partnerKeys = {
   all: ["finance", "partners"] as const,
   list: () => [...partnerKeys.all, "list"] as const,
+  settlement: (id: string) => [...partnerKeys.all, "settlement", id] as const,
 }
 
 export function usePartners(enabled = true) {

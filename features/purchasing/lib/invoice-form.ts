@@ -84,6 +84,7 @@ export function toInvoiceInput(form: InvoiceFormValues): InvoiceInput {
     costs: form.costs.map(toCostInput),
     payments: form.payments.map((payment) => ({
       ...parsePayer(payment.payer),
+      useInvestorBalance: payment.payer.startsWith("INVESTOR:") && payment.useInvestorBalance === true,
       amountUsd: form.payments.length === 1 ? total : Number(payment.amount),
     })),
   }

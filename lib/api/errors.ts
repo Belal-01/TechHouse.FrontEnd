@@ -67,6 +67,7 @@ const MESSAGES: Record<string, string> = {
   EXPENSE_CATEGORY_SYSTEM: "يستخدم النظام هذه الفئة، فلا يمكن حذفها أو تعطيلها.",
   PERSON_NOT_FOUND: "الشخص غير موجود.",
   PERSON_MANAGED_AS_PARTNER: "عدّل بيانات هذا الشخص من صفحة الشركاء والمستثمرين.",
+  INVESTOR_BALANCE_INSUFFICIENT: "المبلغ أكبر من الرصيد المتاح للمستثمر.",
   PERSON_INACTIVE: "هذا الشخص غير فعّال.",
   PERSON_NAME_EXISTS: "يوجد شخص بهذا الاسم.",
   ADVANCE_EXCEEDS_BALANCE: "المبلغ أكبر مما عليه من سلفة بهذه العملة.",

@@ -1,7 +1,7 @@
 "use client"
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useInvalidateCash } from "@/features/finance"
+import { useInvalidateCash, useInvalidatePartners } from "@/features/finance"
 import { stockKeys } from "@/features/inventory"
 import { api } from "@/lib/api/client"
 import type { PageResponse } from "@/lib/api/types"
@@ -38,12 +38,14 @@ export function useOrder(id: string) {
 function useStoreSavedOrder() {
   const queryClient = useQueryClient()
   const invalidateCash = useInvalidateCash()
+  const invalidatePartners = useInvalidatePartners()
   return (order: OrderDetail) => {
     queryClient.setQueryData(orderKeys.detail(order.id), order)
     return Promise.all([
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() }),
       queryClient.invalidateQueries({ queryKey: stockKeys.all }),
       invalidateCash(),
+      invalidatePartners(),
     ])
   }
 }

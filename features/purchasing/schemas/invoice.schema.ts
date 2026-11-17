@@ -50,7 +50,7 @@ export const costLineSchema = z
   })
 
 /** With one payment it covers the whole goods total, so its amount is not asked. */
-export const paymentLineSchema = z.object({ payer: payerSchema, amount: z.string().trim() })
+export const paymentLineSchema = z.object({ payer: payerSchema, amount: z.string().trim(), useInvestorBalance: z.boolean().optional() })
 
 /** Sum of the goods in 1/10,000 dollar units, or null while a line is invalid. */
 export function goodsTotalUnits(items: { quantity: string; unitPriceUsd: string }[]): bigint | null {

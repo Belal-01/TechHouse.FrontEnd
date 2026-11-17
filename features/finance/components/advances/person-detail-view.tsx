@@ -84,6 +84,9 @@ export function PersonDetailView({ personId }: { personId: string }) {
         backLabel="السلف"
         actions={
           <>
+            {p.partnerKind === "INVESTOR" && p.partnerId ? (
+              <ButtonLink variant="outline" href={`/finance/partners/${p.partnerId}`}>تسوية المستثمر</ButtonLink>
+            ) : null}
             <Button variant="outline" onClick={() => open("spend")} disabled={!owesAnything}>
               <ShoppingBag aria-hidden />
               صُرف على المتجر
